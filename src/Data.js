@@ -53,7 +53,7 @@ export const logInUser = (email, password) =>
     }, 1000);
   });
 
-export const signUpUser = (email, password, username, firstName, lastName) => {
+export const signUpUser = (email, password, username, firstName, lastName) =>
   new Promise((resolve, reject) => {
     const userFound = userData.find((user) => {
       if (user.email === email || user.username === username) {
@@ -77,10 +77,9 @@ export const signUpUser = (email, password, username, firstName, lastName) => {
           lastName,
         });
         console.log(userData);
-        resolve("user created successfully, please login.");
+        resolve({ successMessage: "user created successfully, please login." });
       } catch (e) {
         reject(e);
       }
     }, 1000);
   });
-};

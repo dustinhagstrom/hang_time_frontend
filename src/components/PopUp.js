@@ -7,10 +7,7 @@ import Home from "./Home";
 
 function PopUp(props) {
   const user = useSelector((state) => state.user);
-
-  const { successMessage } = props;
-
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const redirectsUserToGameOptionsOnLogin = () => {
     setTimeout(() => {
@@ -22,11 +19,6 @@ function PopUp(props) {
   useEffect(() => {
     if (user) {
       redirectsUserToGameOptionsOnLogin();
-    } else {
-      setTimeout(() => {
-        navigate("/login");
-      }, 1000);
-      console.log("in popup component");
     }
   }, []);
   return (
@@ -38,13 +30,9 @@ function PopUp(props) {
         flexDirection: "column",
       }}
     >
-      {user ? (
-        <Typography>
-          Welcome Back {user.username}! Redirecting you to user options...
-        </Typography>
-      ) : (
-        <Typography>{successMessage}</Typography>
-      )}
+      <Typography>
+        Welcome Back {user.username}! Redirecting you to user options...
+      </Typography>
     </Box>
   );
 }
