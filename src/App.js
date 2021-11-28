@@ -2,7 +2,7 @@ import { Provider as ReduxProvider } from "react-redux";
 import { Route, Routes } from "react-router";
 import "./App.css";
 import Home from "./components/Home";
-import LoginPage from "./components/LoginPage";
+import LoginPage from "./pages/LoginPage";
 import Logout from "./components/Logout";
 import { store } from "./redux";
 

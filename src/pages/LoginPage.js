@@ -5,13 +5,13 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { logInUser, signUpUser } from "../Data";
 import { logInActionCreator } from "../redux/userState";
-import Layout from "./Layout";
-import PopUp from "./PopUp";
+import Layout from "../components/Layout";
+import PopUp from "../components/PopUp";
 
 const Form = (props) => {
   const { setError, setSuccessMessage } = props;
   //var's below set to allow login initially. (no user => then signup instead);
-  const [isARegisteredUser, setIsARegisteredUser] = useState(false);
+  const [isARegisteredUser, setIsARegisteredUser] = useState(true);
   let buttonName = isARegisteredUser ? "Login" : "Sign Up";
 
   const [{ email, password, username, firstName, lastName }, setCredentials] =
@@ -39,17 +39,30 @@ const Form = (props) => {
       .then((response) => {
         console.log(response);
         const { successMessage } = response;
-        toggleIsARegisteredUser();
         setSuccessMessage(successMessage);
+        toggleIsARegisteredUser(); //this toggles Boolean and clears input fields.
       })
       .catch((e) => {
+        //if error then the input fields do not clear.
         console.log("error: ", e);
         setError(e.message);
       });
   };
 
-  const toggleIsARegisteredUser = () =>
+  const toggleIsARegisteredUser = () => {
     setIsARegisteredUser(!isARegisteredUser);
+    removeValueFromTextField();
+  };
+
+  const removeValueFromTextField = () => {
+    setCredentials({
+      email: "",
+      password: "",
+      username: "",
+      firstName: "",
+      lastName: "",
+    });
+  };
 
   return (
     <Box
@@ -232,6 +245,7 @@ function LoginPage() {
           display: "flex",
           justifyContent: "center",
           color: error ? "red" : "green",
+          minHeight: "5vh",
         }}
       >
         {error || successMessage}
