@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Home from "./Home";
+import Home from "../pages/HomePage";
 
 function PopUp(props) {
   const user = useSelector((state) => state.user);

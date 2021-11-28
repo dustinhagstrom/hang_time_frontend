@@ -3,7 +3,7 @@ import { Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 import { useSelector } from "react-redux";
-import Layout from "./Layout";
+import Layout from "../components/Layout";
 
 function Home() {
   const user = useSelector((state) => state.user);

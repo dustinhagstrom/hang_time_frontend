@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { logInActionCreator } from "../redux/userState";
 
-import Home from "./Home";
+import Home from "../pages/HomePage";
 
 function Logout() {
   const dispatch = useDispatch();
