@@ -4,19 +4,18 @@ import { Box } from "@mui/system";
 import React from "react";
 import { useSelector } from "react-redux";
 import Layout from "../components/Layout";
+import { useNavigate } from "react-router";
 
 function Home() {
   const user = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
-  //   const theme = {
-  //     spacing: 5,
-  //   };
-
-  // const retrieveCookieFromStorage = () => {
-  //   let userCookie = JSON.parse(Cookies.get("user"));
-  //   console.log(userCookie);
-  // };
-
+  const createASession = () => {
+    return navigate("/host");
+  };
+  const joinASession = () => {
+    return navigate("/join");
+  };
   return (
     <Layout>
       <Box sx={{ position: "relative" }}>
@@ -59,6 +58,7 @@ function Home() {
               <Button
                 sx={{ border: "black solid 2px", width: "100%" }}
                 disabled={user ? false : true}
+                onClick={createASession}
               >
                 Create a Session
               </Button>
@@ -67,6 +67,7 @@ function Home() {
               <Button
                 sx={{ border: "black solid 2px", width: "100%" }}
                 disabled={user ? false : true}
+                onClick={joinASession}
               >
                 Join a Session
               </Button>

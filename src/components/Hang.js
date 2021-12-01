@@ -5,9 +5,10 @@ import { useSelector } from "react-redux";
 function Hang() {
   // the word is stored in wordBank in the server. could store here but then people could cheat.
   const user = useSelector((state) => state.user);
+  const strikes = useSelector((state) => state.strikes);
 
   return (
-    <Box>
+    <Box sx={{ height: "100%" }}>
       <svg
         style={{
           display: "flex",
@@ -48,49 +49,76 @@ function Hang() {
           style={{ stroke: "#000", strokeWidth: "2" }}
         />
         {/* below is the stick person */}
-        <circle
-          cx="150"
-          cy="90"
-          r="35"
-          stroke="black"
-          stroke-width="2"
-          fill="transparent"
-        />
-        <line
-          x1="150"
-          y1="125"
-          x2="150"
-          y2="250"
-          style={{ stroke: "#000", strokeWidth: "2" }}
-        />
-        <line
-          x1="150"
-          y1="150"
-          x2="225"
-          y2="150"
-          style={{ stroke: "#000", strokeWidth: "2" }}
-        />
-        <line
-          x1="75"
-          y1="150"
-          x2="150"
-          y2="150"
-          style={{ stroke: "#000", strokeWidth: "2" }}
-        />
-        <line
-          x1="75"
-          y1="325"
-          x2="150"
-          y2="250"
-          style={{ stroke: "#000", strokeWidth: "2" }}
-        />
-        <line
-          x1="150"
-          y1="250"
-          x2="225"
-          y2="325"
-          style={{ stroke: "#000", strokeWidth: "2" }}
-        />
+
+        {strikes >= 1 ? (
+          <circle
+            cx="150"
+            cy="90"
+            r="35"
+            style={{
+              stroke: "black",
+              strokeWidth: "2",
+              fill: "transparent",
+            }}
+          />
+        ) : (
+          <></>
+        )}
+        {strikes >= 2 ? (
+          <line
+            x1="150"
+            y1="125"
+            x2="150"
+            y2="250"
+            style={{ stroke: "#000", strokeWidth: "2" }}
+          />
+        ) : (
+          <></>
+        )}
+        {strikes >= 3 ? (
+          <line
+            x1="150"
+            y1="150"
+            x2="225"
+            y2="150"
+            style={{ stroke: "#000", strokeWidth: "2" }}
+          />
+        ) : (
+          <></>
+        )}
+        {strikes >= 4 ? (
+          <line
+            x1="75"
+            y1="150"
+            x2="150"
+            y2="150"
+            style={{ stroke: "#000", strokeWidth: "2" }}
+          />
+        ) : (
+          <></>
+        )}
+        {strikes >= 5 ? (
+          <line
+            x1="75"
+            y1="325"
+            x2="150"
+            y2="250"
+            style={{ stroke: "#000", strokeWidth: "2" }}
+          />
+        ) : (
+          <></>
+        )}
+        {strikes >= 6 ? (
+          <line
+            x1="150"
+            y1="250"
+            x2="225"
+            y2="325"
+            style={{ stroke: "#000", strokeWidth: "2" }}
+          />
+        ) : (
+          <></>
+        )}
       </svg>
     </Box>
   );

@@ -20,11 +20,11 @@ export const userData = [
 ];
 
 export const wordBank = {
-  word: "",
+  word: "dude",
 };
 
-export const wrongAnswerStrikes = {
-  strikes: 0,
+export const strikes = {
+  strikes: 1,
 };
 
 export const logInUser = (email, password) =>
@@ -78,6 +78,31 @@ export const signUpUser = (email, password, username, firstName, lastName) =>
         });
         console.log(userData);
         resolve({ successMessage: "user created successfully, please login." });
+      } catch (e) {
+        reject(e);
+      }
+    }, 1000);
+  });
+
+export const addWordToDB = (word) =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        console.log(word);
+        wordBank.word = word;
+        resolve({ message: "word is approved." });
+      } catch (e) {
+        reject(e);
+      }
+    }, 1000);
+  });
+
+export const updateStrikesInDB = ({ resetStrikes }) =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        strikes.strikes = resetStrikes;
+        resolve({ message: "strikes updated." });
       } catch (e) {
         reject(e);
       }

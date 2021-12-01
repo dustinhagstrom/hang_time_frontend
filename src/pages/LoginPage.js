@@ -43,7 +43,7 @@ const Form = (props) => {
         toggleIsARegisteredUser(); //this toggles Boolean and clears input fields.
       })
       .catch((e) => {
-        //if error then the input fields do not clear.
+        //if error then the input fields do not
         console.log("error: ", e);
         setError(e.message);
       });

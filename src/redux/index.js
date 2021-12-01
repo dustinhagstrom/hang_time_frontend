@@ -1,11 +1,12 @@
 //this contains the user state and also has the logic for the store and actions.
 import { combineReducers, createStore } from "redux";
 import { userReducer } from "./userState";
-import { WordReducer } from "./wordState";
+import { WordReducer, StrikeReducer } from "./wordState";
 
 const rootReducer = combineReducers({
   user: userReducer,
   wordBank: WordReducer,
+  strikes: StrikeReducer,
 });
 
 export const store = createStore(
