@@ -12,7 +12,7 @@ function Strikes() {
         justifyContent: "center",
         alignItems: "center",
         background: "#999",
-        minWidth: "200px",
+        minWidth: "300px",
         flexDirection: "column",
       }}
     >

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import Layout from "./Layout";
 
 function JoinSession() {
-  const [sessionID, setSessionID] = useState();
+  const [sessionID, setSessionID] = useState("");
 
   const navigate = useNavigate();
 

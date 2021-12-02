@@ -10,11 +10,9 @@ import { logInActionCreator } from "../redux/userState";
 function Header() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  console.log(user);
   //write the logic for user being logged in within header component b/c header persists throughout the application. put in a use effect to handle a reload. will have to use jwt decode in future when I have backend.
 
   const loggedInUser = () => {
-    console.log(Cookies.get("user"));
     const userCookieExists = Cookies.get("user");
     if (userCookieExists) {
       const userIsLoggedIn = JSON.parse(Cookies.get("user"));

@@ -1,6 +1,7 @@
 import { Box } from "@mui/system";
 import React from "react";
 import { useSelector } from "react-redux";
+import AlphabetButtons from "../components/AlphabetButtons";
 import Hang from "../components/Hang";
 import Layout from "../components/Layout";
 import Opponent from "../components/Opponent";
@@ -27,7 +28,10 @@ function Game() {
               <Hang />
               <Word />
             </Box>
-            <Strikes />
+            <Box sx={{ maxWidth: "300px" }}>
+              <Strikes />
+              <AlphabetButtons />
+            </Box>
           </>
         ) : (
           <>

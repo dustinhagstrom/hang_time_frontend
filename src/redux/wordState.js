@@ -10,7 +10,6 @@ export const newWordActionCreator = (word) => ({
 export const WordReducer = (state = "hsfhls", action) => {
   if (action.type === NEW_WORD_ACTION) {
     const { payload } = action;
-    console.log("payload: ", payload);
 
     return payload.word;
   }
@@ -34,7 +33,7 @@ export const newStrikeActionCreator = (strikes) => ({
   payload: strikes,
 });
 
-export const StrikeReducer = (state = 1, action) => {
+export const StrikeReducer = (state = 6, action) => {
   if (action.type === NEW_STRIKE_ACTION) {
     const { payload } = action;
 

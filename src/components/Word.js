@@ -7,7 +7,6 @@ import Letter from "./Letter";
 // this component shows the word
 function Word() {
   const word = useSelector((state) => state.wordBank);
-  console.log(word);
   const [letters, setLetters] = useState([]);
 
   const addsLetters = () => {
@@ -16,7 +15,6 @@ function Word() {
       letterHolder.push({ letter: word[i] });
     }
     setLetters(letterHolder);
-    console.log("letterHolder :", letterHolder);
   };
 
   useEffect(() => {
@@ -29,7 +27,6 @@ function Word() {
         sx={{ display: "flex", justifyContent: "center" }}
       >
         {letters.map((letter, index, array) => {
-          console.log(letter);
           return <Letter letterChar={letter} key={index} />;
         })}
       </Box>

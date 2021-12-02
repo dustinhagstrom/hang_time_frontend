@@ -19,7 +19,6 @@ function PopUp(props) {
     setTimeout(() => {
       navigate("/");
     }, 2000);
-    console.log("in popup component");
   };
 
   //below func used when gameover and new game button clicked.

@@ -61,7 +61,6 @@ export const signUpUser = (email, password, username, firstName, lastName) =>
       }
       return false;
     });
-    console.log(email, password, firstName, lastName, username);
 
     setTimeout(() => {
       try {
@@ -76,7 +75,6 @@ export const signUpUser = (email, password, username, firstName, lastName) =>
           firstName,
           lastName,
         });
-        console.log(userData);
         resolve({ successMessage: "user created successfully, please login." });
       } catch (e) {
         reject(e);
@@ -88,7 +86,6 @@ export const addWordToDB = (word) =>
   new Promise((resolve, reject) => {
     setTimeout(() => {
       try {
-        console.log(word);
         wordBank.word = word;
         resolve({ message: "word is approved." });
       } catch (e) {
@@ -103,6 +100,18 @@ export const updateStrikesInDB = ({ resetStrikes }) =>
       try {
         strikes.strikes = resetStrikes;
         resolve({ message: "strikes updated." });
+      } catch (e) {
+        reject(e);
+      }
+    }, 1000);
+  });
+
+//TODO this will route to back end with data of creator and opponent along with other applicable data from a game session.
+export const instanceOfAGame = ({}) =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        resolve({ message: "instance of game route hit." });
       } catch (e) {
         reject(e);
       }

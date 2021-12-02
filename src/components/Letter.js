@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 
 function Letter(props) {
   const { letterChar } = props;
-  console.log("letterChar: ", letterChar);
   const [letter, setLetter] = useState("");
   const [correctLetter, setCorrectLetter] = useState("");
 
