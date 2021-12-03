@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { updateStrikesInDB } from "../Data";
 import Home from "../pages/HomePage";
-import { newStrikeActionCreator } from "../redux/wordState";
+import { newStrikeActionCreator } from "../redux/strikeState";
 
 function PopUp(props) {
   const user = useSelector((state) => state.user);

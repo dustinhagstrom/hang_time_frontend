@@ -1,5 +1,3 @@
-import Cookies from "js-cookie";
-
 export const userData = [
   {
     id: "123",
@@ -43,7 +41,6 @@ export const logInUser = (email, password) =>
         if (userFound) {
           const { email, username } = userFound;
           let onlyNecessaryUserData = { email, username };
-          Cookies.set("user", JSON.stringify(onlyNecessaryUserData));
           resolve(onlyNecessaryUserData);
         }
         throw new Error("Incorrect username or password");

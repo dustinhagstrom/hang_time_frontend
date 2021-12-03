@@ -6,7 +6,7 @@ import Letter from "./Letter";
 
 // this component shows the word
 function Word() {
-  const word = useSelector((state) => state.wordBank);
+  const word = useSelector((state) => state.wordBank.word);
   const [letters, setLetters] = useState([]);
 
   const addsLetters = () => {

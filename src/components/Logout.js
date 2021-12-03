@@ -1,16 +1,26 @@
-import Cookies from "js-cookie";
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { logInActionCreator } from "../redux/userState";
+
+import {
+  setPlayerOneActionCreator,
+  setPlayerTwoActionCreator,
+} from "../redux/playerState";
 
 import Home from "../pages/HomePage";
+import { newWordActionCreator } from "../redux/wordState";
+import { newStrikeActionCreator } from "../redux/strikeState";
+import { logInActionCreator } from "../redux/userState";
 
+//reset redux stores and return home component
 function Logout() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    Cookies.remove("user");
     dispatch(logInActionCreator(null));
+    dispatch(setPlayerOneActionCreator(null));
+    dispatch(setPlayerTwoActionCreator(null));
+    dispatch(newStrikeActionCreator(null));
+    dispatch(newWordActionCreator(null));
   }, []);
 
   return <Home />;

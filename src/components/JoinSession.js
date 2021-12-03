@@ -1,18 +1,24 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import { setPlayerTwoActionCreator } from "../redux/playerState";
 import Layout from "./Layout";
 
 function JoinSession() {
+  const user = useSelector((state) => state.user);
+
   const [sessionID, setSessionID] = useState("");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const joinSession = () => {
-    console.log("you joined a session.");
+  const GoToGameAsPlayerTwo = () => {
+    dispatch(setPlayerTwoActionCreator(user));
     navigate("/game");
   };
+
   return (
     <Layout>
       <Box
@@ -29,7 +35,7 @@ function JoinSession() {
           value={sessionID}
           onChange={(e) => setSessionID(e.target.value)}
         ></TextField>
-        <Button onClick={joinSession}>Join Session</Button>
+        <Button onClick={GoToGameAsPlayerTwo}>Join Session</Button>
       </Box>
     </Layout>
   );

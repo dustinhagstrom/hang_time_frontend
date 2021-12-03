@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 import { Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
@@ -74,7 +73,6 @@ function Home() {
             </Box>
           </Box>
         </Box>
-        {/* <Button onClick={retrieveCookieFromStorage}>retrieve cookie</Button>> */}
       </Box>
     </Layout>
   );

@@ -2,8 +2,7 @@ TODOS:
 
 for game page:
 
-- store who is the user
-- store who is the opponent
+- determine whether I need js-cookie
 - Opponent can press alphabet buttons ONLY: a grid of letters that are buttons that can be picked by the player and an 'X', or a fade/color change, or disappear button after picked.
 - hook up buttons so that
 - hook up game letters to populate when correct letter pressed.

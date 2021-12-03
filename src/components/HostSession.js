@@ -1,13 +1,15 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Navigate, useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import { addWordToDB } from "../Data";
+import { setPlayerOneActionCreator } from "../redux/playerState";
 import { newWordActionCreator } from "../redux/wordState";
 import Layout from "./Layout";
 
 function HostSession() {
+  const user = useSelector((state) => state.user);
   const [inputWord, setInputWord] = useState("");
 
   const dispatch = useDispatch();
@@ -16,7 +18,8 @@ function HostSession() {
     addWordToDB(inputWord)
       .then((response) => {
         console.log(response.message);
-        dispatch(newWordActionCreator(inputWord));
+        dispatch(newWordActionCreator({ word: inputWord }));
+        dispatch(setPlayerOneActionCreator(user));
         navigate("/game");
       })
       .catch((e) => {

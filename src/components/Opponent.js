@@ -1,7 +1,9 @@
 import React from "react";
 
-function Opponent() {
-  return <div>this is opponent</div>;
+function Opponent(props) {
+  const { opponent } = props;
+
+  return <div>{opponent ? opponent : ""}</div>;
 }
 
 export default Opponent;

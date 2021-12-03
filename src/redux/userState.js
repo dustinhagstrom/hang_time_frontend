@@ -1,4 +1,4 @@
-//this contains the user state and also has the logic for the store and actions.
+const USER_INITIAL_STATE = { user: null };
 
 //ACTION
 const SIGN_UP_ACTION = "dustinhagstrom.codes/SIGN_UP_ACTION";
@@ -28,7 +28,7 @@ export const deleteUserActionCreator = (user) => ({
   payload: { user },
 });
 
-export const userReducer = (state = null, action) => {
+export const userReducer = (state = USER_INITIAL_STATE, action) => {
   if (action.type === LOG_IN_ACTION) {
     const { payload } = action;
 
