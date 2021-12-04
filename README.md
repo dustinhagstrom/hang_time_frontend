@@ -3,8 +3,9 @@ TODOS:
 for game page:
 
 - determine whether I need js-cookie
-- Opponent can press alphabet buttons ONLY: a grid of letters that are buttons that can be picked by the player and an 'X', or a fade/color change, or disappear button after picked.
-- hook up buttons so that
+- set up wordBank in redux to match db values.
+- set initial redux states to null, if I want to.
+- Alphabet buttons fade/color change, or disappear button after picked.
 - hook up game letters to populate when correct letter pressed.
 - make the game responsive for various screen sizes
 - make everything pretty

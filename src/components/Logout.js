@@ -19,8 +19,8 @@ function Logout() {
     dispatch(logInActionCreator(null));
     dispatch(setPlayerOneActionCreator(null));
     dispatch(setPlayerTwoActionCreator(null));
-    dispatch(newStrikeActionCreator(null));
-    dispatch(newWordActionCreator(null));
+    dispatch(newStrikeActionCreator({ strikes: 0 }));
+    dispatch(newWordActionCreator({ word: "" }));
   }, []);
 
   return <Home />;

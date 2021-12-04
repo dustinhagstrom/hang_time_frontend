@@ -23,9 +23,9 @@ function PopUp(props) {
 
   //below func used when gameover and new game button clicked.
   const repeatAnotherGame = () => {
-    const resetStrikes = { strikes: 0 };
-    dispatch(newStrikeActionCreator(resetStrikes));
-    updateStrikesInDB(resetStrikes)
+    // const resetStrikes = { strikes: 0 };
+    dispatch(newStrikeActionCreator(null));
+    updateStrikesInDB(null)
       .then((response) => console.log(response.message))
       .catch((error) => console.log(error));
     navigate("/game");

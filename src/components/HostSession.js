@@ -14,6 +14,7 @@ function HostSession() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const submitWord = () => {
     addWordToDB(inputWord)
       .then((response) => {

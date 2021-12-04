@@ -1,4 +1,4 @@
-const STRIKES_INITIAL_STATE = { strikes: 0 };
+const STRIKES_INITIAL_STATE = { strikes: null };
 
 //ACTION
 const NEW_STRIKE_ACTION = "dustinhagstrom.codes/NEW_STRIKE_ACTION";

@@ -19,10 +19,12 @@ export const userData = [
 
 export const wordBank = {
   word: "dude",
+  emptyLetters: 0,
+  correctLetters: [],
 };
 
 export const strikes = {
-  strikes: 1,
+  strikes: 0,
 };
 
 export const logInUser = (email, password) =>
