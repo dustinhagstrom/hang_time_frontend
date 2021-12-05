@@ -1,13 +1,17 @@
 import { Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Layout from "../components/Layout";
 import { useNavigate } from "react-router";
+import { getWordInfoFromDB } from "../Data";
+import { newWordActionCreator } from "../redux/wordState";
 
 function Home() {
   const user = useSelector((state) => state.user);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const createASession = () => {
     return navigate("/host");
@@ -15,6 +19,14 @@ function Home() {
   const joinASession = () => {
     return navigate("/join");
   };
+
+  useEffect(() => {
+    // call the db for the strike information and the wordBank info
+    getWordInfoFromDB().then((res) => {
+      console.log(res.wordBank);
+      dispatch(newWordActionCreator(res.wordBank.word));
+    });
+  }, []);
   return (
     <Layout>
       <Box sx={{ position: "relative" }}>

@@ -18,7 +18,7 @@ export const userData = [
 ];
 
 export const wordBank = {
-  word: "dude",
+  word: "HANG",
   emptyLetters: 0,
   correctLetters: [],
 };
@@ -92,6 +92,29 @@ export const addWordToDB = (word) =>
       }
     }, 1000);
   });
+
+export const getWordInfoFromDB = () =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        resolve({ wordBank });
+      } catch (e) {
+        reject(e);
+      }
+    }, 1000);
+  });
+
+// export const getStrikeInfoFromDB = (word) =>
+//   new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       try {
+//         wordBank.word = word;
+//         resolve({ message: "word is approved." });
+//       } catch (e) {
+//         reject(e);
+//       }
+//     }, 1000);
+//   });
 
 export const updateStrikesInDB = ({ resetStrikes }) =>
   new Promise((resolve, reject) => {

@@ -21,6 +21,9 @@ function Opponent() {
       <Typography>
         {typeof opponent === "object" ? opponent.username : opponent}
       </Typography>
+      <button onClick={() => setOpponent({ username: "krusty" })}>
+        krusty gonna come
+      </button>
     </Box>
   );
 }

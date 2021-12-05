@@ -8,6 +8,7 @@ import Letter from "./Letter";
 function Word() {
   const word = useSelector((state) => state.wordBank.word);
   const [letters, setLetters] = useState([]);
+  //handle the empty letter logic, pass down set func to letters component.
 
   const addsLetters = () => {
     let letterHolder = [];

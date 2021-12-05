@@ -2,9 +2,8 @@ TODOS:
 
 for game page:
 
-- when the backend can support storage and retrieval of wordBank items, then verify proper operation. current config in FE w/o BE resets game word to default whenever action is dispatched.
+- when the backend can support storage and retrieval of wordBank items, then verify proper operation. current config in FE w/o BE resets wordBank in redux to default word on data page whenever action is dispatched.
 - determine whether I need js-cookie
-- Alphabet buttons fade/color change, or disappear button after picked.
 - make the game responsive for various screen sizes
 - make everything pretty
 - game over message with win or loss?

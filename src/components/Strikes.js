@@ -4,7 +4,9 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 function Strikes() {
-  const strikes = useSelector((state) => state.strikes);
+  const strikes = useSelector((state) => state.strikes.strikes);
+
+  console.log(strikes);
   return (
     <Box
       sx={{

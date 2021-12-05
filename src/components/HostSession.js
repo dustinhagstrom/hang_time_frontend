@@ -16,10 +16,10 @@ function HostSession() {
   const navigate = useNavigate();
 
   const submitWord = () => {
-    addWordToDB(inputWord)
+    addWordToDB(inputWord.toUpperCase())
       .then((response) => {
         console.log(response.message);
-        dispatch(newWordActionCreator({ word: inputWord }));
+        dispatch(newWordActionCreator(inputWord.toUpperCase()));
         dispatch(setPlayerOneActionCreator(user));
         navigate("/game");
       })

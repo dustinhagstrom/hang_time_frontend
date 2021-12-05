@@ -1,29 +1,42 @@
 import { Button, Grid } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { newStrikeActionCreator } from "../redux/strikeState";
+import { updateCorrectLettersActionCreator } from "../redux/wordState";
 
-function AlphabetButtons() {
+function AlphabetButtons(props) {
+  const { word, setCurrentStrikes, currentStrikes } = props;
   const user = useSelector((state) => state.user);
   const playerOne = useSelector((state) => state.playerOne);
-  const wordObj = useSelector((state) => state.wordBank);
 
-  const [word, setWord] = useState("");
-  const [emptyLetters, setEmptyLetters] = useState(0);
-
+  const dispatch = useDispatch();
   const [alphabetJSXArray, setAlphabetJSXArray] = useState([]);
 
-  const chosenLetter = (e) => {
-    const clickedLetter = e.target.name.toLowerCase();
-    if (word.includes(clickedLetter)) {
-      console.log("the game word includes this letter");
-      // populate that letter on the gamepage
-      // update empty letters to subtract spaces
-      // that are filled with letters.
-    } else {
-      // add a strike,
-    }
+  const resettingRef = useRef(false); //ref used to help track strikes.
 
-    console.log(e.target.name);
+  const styleButtonAfterItIsClicked = (e) => {
+    e.target.disabled = true;
+    e.target.style = "visibility: hidden";
+  };
+
+  const chosenLetter = (e) => {
+    const clickedLetter = e.target.name;
+    styleButtonAfterItIsClicked(e);
+    if (word.includes(clickedLetter)) {
+      //loop through word to populate letters.
+      for (let i = 0; i < word.length; i++) {
+        if (word[i] === clickedLetter) {
+          // TODO hit the db for update.
+          dispatch(
+            updateCorrectLettersActionCreator({ correctLetters: clickedLetter })
+          );
+          break; //this prevents duplicate calls to reducer and db.
+        }
+      }
+    } else {
+      resettingRef.current = true;
+      setCurrentStrikes(currentStrikes + 1);
+    }
   };
 
   const generatesTheAlphabet = () => {
@@ -49,9 +62,12 @@ function AlphabetButtons() {
   };
 
   useEffect(() => {
+    if (resettingRef.current) {
+      resettingRef.current = false;
+      dispatch(newStrikeActionCreator({ strikes: currentStrikes }));
+    }
     generatesTheAlphabet();
-    setWord(wordObj.word);
-  }, [word]);
+  }, [currentStrikes]);
   return (
     <>
       <Grid

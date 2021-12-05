@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 function Hang() {
   // the word is stored in wordBank in the server. could store here but then people could cheat.
   const user = useSelector((state) => state.user);
-  const strikes = useSelector((state) => state.strikes);
+  const strikes = useSelector((state) => state.strikes.strikes);
 
   return (
     <Box sx={{ height: "100%" }}>

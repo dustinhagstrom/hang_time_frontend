@@ -1,33 +1,46 @@
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 function Letter(props) {
   const { letterChar } = props;
-  const [letter, setLetter] = useState("");
-  const [correctLetter, setCorrectLetter] = useState("");
 
-  const correctLetterInput = () => {
-    //TODO: make a function that checks if a supplied letter matches the word for the game.
-  };
+  const wordObj = useSelector((state) => state.wordBank);
+  const correctLettersArray = wordObj.correctLetters;
+
+  const [letter, setLetter] = useState("");
+  const [correctLetter, setCorrectLetter] = useState(false);
 
   useEffect(() => {
     setLetter(letterChar.letter);
-  }, []);
+    if (correctLettersArray.includes(letter)) {
+      setCorrectLetter(true);
+    }
+  }, [wordObj]);
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        marginRight: "10px",
+        fontSize: "24px",
+        minWidth: "20px",
+      }}
+    >
       <Typography
         sx={{
-          borderBottom: "solid black 2px",
-          display: "flex",
-          justifyContent: "center",
-          marginRight: "10px",
-          fontSize: "24px",
-          minWidth: "20px",
+          visibility: correctLetter ? "visible" : "hidden",
+          textAlign: "center",
         }}
       >
         {letter}
       </Typography>
+      <Typography
+        sx={{
+          borderBottom: "solid black 2px",
+        }}
+      ></Typography>
     </Box>
   );
 }
