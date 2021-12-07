@@ -17,15 +17,19 @@ const PlayerScreen = () => {
   const wordObj = useSelector((state) => state.wordBank);
   const initialWord = wordObj.word;
   const initialStrikes = strikesObj.strikes;
-
+  const initialEmptyLetters = wordObj.emptyLetters;
+  console.log("playerScreen re-render");
   const dispatch = useDispatch();
 
   const [word, setWord] = useState(initialWord);
   const [currentStrikes, setCurrentStrikes] = useState(initialStrikes);
-  const [emptyLetters, setEmptyLetters] = useState(null);
+  //filledLetter initial state intentionally omitted
+  const [{ emptyLetters, filledLetter }, setLetters] = useState({
+    emptyLetters: initialEmptyLetters,
+  });
+  //incorrectLetter initial state intentionally omitted
+  const [incorrectLetter, setIncorrectLetter] = useState();
 
-  // if a letter is guessed correctly then subtract one from empty letters
-  // if a letter is guessed incorrectly then add a strike.
   // if strikes === 6 -> game over. player one wins
   // if emptyLetters === 0 -> game over. player two wins
   const [gameOver, setGameOver] = useState(false);
@@ -40,13 +44,6 @@ const PlayerScreen = () => {
     }
   };
 
-  useEffect(() => {
-    if (emptyLetters === null) {
-      setEmptyLetters(wordObj.word.length); //set num spaces on first load.
-    }
-    setWord(wordObj.word);
-  }, []);
-
   return (
     <>
       {/* {gameOver ? (
@@ -57,7 +54,7 @@ const PlayerScreen = () => {
       <Opponent />
       <Box>
         <Hang />
-        <Word />
+        <Word word={word} />
       </Box>
       <Box sx={{ maxWidth: "300px" }}>
         <Strikes />
@@ -65,6 +62,11 @@ const PlayerScreen = () => {
           word={word}
           setCurrentStrikes={setCurrentStrikes}
           currentStrikes={currentStrikes}
+          setLetters={setLetters}
+          emptyLetters={emptyLetters}
+          filledLetter={filledLetter}
+          setIncorrectLetter={setIncorrectLetter}
+          incorrectLetter={incorrectLetter}
         />
       </Box>
     </>

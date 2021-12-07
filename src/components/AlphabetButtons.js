@@ -2,39 +2,66 @@ import { Button, Grid } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { newStrikeActionCreator } from "../redux/strikeState";
-import { updateCorrectLettersActionCreator } from "../redux/wordState";
+import {
+  updateCorrectLettersActionCreator,
+  updateIncorrectLettersActionCreator,
+} from "../redux/wordState";
 
 function AlphabetButtons(props) {
-  const { word, setCurrentStrikes, currentStrikes } = props;
+  const {
+    word,
+    setCurrentStrikes,
+    currentStrikes,
+    setLetters,
+    emptyLetters,
+    filledLetter,
+    setIncorrectLetter,
+    incorrectLetter,
+  } = props;
+
   const user = useSelector((state) => state.user);
   const playerOne = useSelector((state) => state.playerOne);
 
   const dispatch = useDispatch();
   const [alphabetJSXArray, setAlphabetJSXArray] = useState([]);
 
-  const resettingRef = useRef(false); //ref used to help track strikes.
+  const strikeRef = useRef(false); //ref used to help track strikes.
+  const emptyLettersRef = useRef(false); //empty spaces ref.
+  const incorrectLettersRef = useRef(false);
+
+  //the following let's are used to store values from chosenLetter func below.
+  let incorrectLetterToPush = incorrectLetter;
+  let correctLetterToPush = filledLetter;
+  let emptySpaceCount = emptyLetters;
 
   const styleButtonAfterItIsClicked = (e) => {
     e.target.disabled = true;
     e.target.style = "visibility: hidden";
   };
 
-  const chosenLetter = (e) => {
+  const chosenLetter = async (e) => {
     const clickedLetter = e.target.name;
     styleButtonAfterItIsClicked(e);
     if (word.includes(clickedLetter)) {
       //loop through word to populate letters.
       for (let i = 0; i < word.length; i++) {
         if (word[i] === clickedLetter) {
-          // TODO hit the db for update.
-          dispatch(
-            updateCorrectLettersActionCreator({ correctLetters: clickedLetter })
-          );
-          break; //this prevents duplicate calls to reducer and db.
+          correctLetterToPush = clickedLetter;
+          emptySpaceCount -= 1;
         }
       }
+      // TODO hit the db for update correctLetters && emptyLetters
+      emptyLettersRef.current = true;
+      setLetters({
+        emptyLetters: emptySpaceCount,
+        filledLetter: correctLetterToPush,
+      });
     } else {
-      resettingRef.current = true;
+      // TODO: hit the db to update incorrectLetters && emptyLetters
+      incorrectLetterToPush = clickedLetter;
+      incorrectLettersRef.current = true;
+      setIncorrectLetter(incorrectLetterToPush);
+      strikeRef.current = true;
       setCurrentStrikes(currentStrikes + 1);
     }
   };
@@ -62,12 +89,29 @@ function AlphabetButtons(props) {
   };
 
   useEffect(() => {
-    if (resettingRef.current) {
-      resettingRef.current = false;
+    if (strikeRef.current && incorrectLettersRef.current) {
+      strikeRef.current = false;
+      incorrectLettersRef.current = false;
       dispatch(newStrikeActionCreator({ strikes: currentStrikes }));
+      dispatch(
+        updateIncorrectLettersActionCreator({
+          incorrectLetters: incorrectLetter,
+          emptyLetters: emptySpaceCount,
+        })
+      );
     }
+    if (emptyLettersRef.current) {
+      emptyLettersRef.current = false;
+      dispatch(
+        updateCorrectLettersActionCreator({
+          correctLetters: correctLetterToPush,
+          emptyLetters: emptySpaceCount,
+        })
+      );
+    }
+
     generatesTheAlphabet();
-  }, [currentStrikes]);
+  }, [currentStrikes, emptyLetters, incorrectLetter]);
   return (
     <>
       <Grid

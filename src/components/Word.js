@@ -5,11 +5,10 @@ import { useSelector } from "react-redux";
 import Letter from "./Letter";
 
 // this component shows the word
-function Word() {
-  const word = useSelector((state) => state.wordBank.word);
+function Word(props) {
+  const { word } = props;
   const [letters, setLetters] = useState([]);
   //handle the empty letter logic, pass down set func to letters component.
-
   const addsLetters = () => {
     let letterHolder = [];
     for (let i = 0; i < word.length; i++) {

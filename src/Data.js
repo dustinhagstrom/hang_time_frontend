@@ -1,9 +1,9 @@
 export const userData = [
   {
     id: "123",
-    email: "dusty@email.com",
+    email: "d",
     username: "dusty",
-    password: "password",
+    password: "d",
     firstName: "dustin",
     lastName: "hagstrom",
   },
@@ -18,9 +18,10 @@ export const userData = [
 ];
 
 export const wordBank = {
-  word: "HANG",
-  emptyLetters: 0,
+  word: "HAPPY",
+  emptyLetters: 5,
   correctLetters: [],
+  incorrectLetters: [],
 };
 
 export const strikes = {
@@ -86,7 +87,10 @@ export const addWordToDB = (word) =>
     setTimeout(() => {
       try {
         wordBank.word = word;
-        resolve({ message: "word is approved." });
+        wordBank.emptyLetters = word.length;
+        wordBank.correctLetters = [];
+        wordBank.incorrectLetters = [];
+        resolve({ message: "word is approved.", wordBank });
       } catch (e) {
         reject(e);
       }

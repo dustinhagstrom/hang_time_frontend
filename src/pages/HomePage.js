@@ -23,8 +23,7 @@ function Home() {
   useEffect(() => {
     // call the db for the strike information and the wordBank info
     getWordInfoFromDB().then((res) => {
-      console.log(res.wordBank);
-      dispatch(newWordActionCreator(res.wordBank.word));
+      dispatch(newWordActionCreator(res.wordBank));
     });
   }, []);
   return (

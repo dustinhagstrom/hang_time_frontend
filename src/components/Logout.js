@@ -20,7 +20,7 @@ function Logout() {
     dispatch(setPlayerOneActionCreator(null));
     dispatch(setPlayerTwoActionCreator(null));
     dispatch(newStrikeActionCreator({ strikes: 0 }));
-    dispatch(newWordActionCreator({ word: "" }));
+    dispatch(newWordActionCreator(null));
   }, []);
 
   return <Home />;

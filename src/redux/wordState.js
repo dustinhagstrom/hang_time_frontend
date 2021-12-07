@@ -4,29 +4,38 @@ const WORD_INITIAL_STATE = { wordBank: null };
 
 //ACTION
 const NEW_WORD_ACTION = "dustinhagstrom.codes/NEW_WORD_ACTION";
-const UPDATE_EMPTY_LETTERS_ACTION =
-  "dustinhagstrom.codes/UPDATE_EMPTY_LETTERS_ACTION";
 const CORRECT_LETTERS_ACTION = "dustinhagstrom.codes/CORRECT_LETTERS_ACTION";
+const INCORRECT_LETTERS_ACTION =
+  "dustinhagstrom.codes/INCORRECT_LETTERS_ACTION";
 
 //ACTION CREATORS
-export const newWordActionCreator = (word) => ({
-  type: NEW_WORD_ACTION,
-  payload: { ...wordBank, word },
-});
-
-export const updateEmptyLettersActionCreator = (emptyLetters) => ({
-  type: UPDATE_EMPTY_LETTERS_ACTION,
-  payload: { ...wordBank, emptyLetters },
-});
+export const newWordActionCreator = (wordBank) => {
+  return {
+    type: NEW_WORD_ACTION,
+    payload: wordBank,
+  };
+};
 
 export const updateCorrectLettersActionCreator = (clickedLetters) => {
-  const { correctLetters } = clickedLetters;
+  const { correctLetters, emptyLetters } = clickedLetters;
 
-  let newWordBank = { ...wordBank };
+  let newWordBank = { ...wordBank, emptyLetters: emptyLetters };
   newWordBank.correctLetters.push(correctLetters);
 
   return {
     type: CORRECT_LETTERS_ACTION,
+    payload: newWordBank,
+  };
+};
+
+export const updateIncorrectLettersActionCreator = (clickedLetters) => {
+  const { incorrectLetters, emptyLetters } = clickedLetters;
+
+  let newWordBank = { ...wordBank, emptyLetters: emptyLetters };
+  newWordBank.incorrectLetters.push(incorrectLetters);
+
+  return {
+    type: INCORRECT_LETTERS_ACTION,
     payload: newWordBank,
   };
 };
@@ -38,13 +47,13 @@ export const wordReducer = (state = WORD_INITIAL_STATE, action) => {
     return payload;
   }
 
-  if (action.type === UPDATE_EMPTY_LETTERS_ACTION) {
+  if (action.type === CORRECT_LETTERS_ACTION) {
     const { payload } = action;
 
     return payload;
   }
 
-  if (action.type === CORRECT_LETTERS_ACTION) {
+  if (action.type === INCORRECT_LETTERS_ACTION) {
     const { payload } = action;
 
     return payload;

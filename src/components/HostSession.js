@@ -11,15 +11,17 @@ import Layout from "./Layout";
 function HostSession() {
   const user = useSelector((state) => state.user);
   const [inputWord, setInputWord] = useState("");
+  const [inputWordLength, setInputWordLength] = useState(0);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const submitWord = () => {
     addWordToDB(inputWord.toUpperCase())
-      .then((response) => {
-        console.log(response.message);
-        dispatch(newWordActionCreator(inputWord.toUpperCase()));
+      .then((res) => {
+        const { wordBank, message } = res;
+        console.log(wordBank);
+        dispatch(newWordActionCreator(wordBank));
         dispatch(setPlayerOneActionCreator(user));
         navigate("/game");
       })
@@ -41,7 +43,10 @@ function HostSession() {
         <TextField
           sx={{ width: "50%" }}
           value={inputWord}
-          onChange={(e) => setInputWord(e.target.value)}
+          onChange={(e) => {
+            setInputWord(e.target.value);
+            setInputWordLength(e.target.value.length);
+          }}
         ></TextField>
         <Button onClick={submitWord}>Submit Word</Button>
       </Box>
