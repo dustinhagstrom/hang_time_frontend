@@ -67,6 +67,9 @@ const PlayerScreen = () => {
           filledLetter={filledLetter}
           setIncorrectLetter={setIncorrectLetter}
           incorrectLetter={incorrectLetter}
+          user={user}
+          playerOne={playerOne}
+          playerTwo={playerTwo}
         />
       </Box>
     </>

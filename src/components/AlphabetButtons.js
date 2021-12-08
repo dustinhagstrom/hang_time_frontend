@@ -1,4 +1,4 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { newStrikeActionCreator } from "../redux/strikeState";
@@ -17,27 +17,35 @@ function AlphabetButtons(props) {
     filledLetter,
     setIncorrectLetter,
     incorrectLetter,
+    user,
+    playerOne,
+    playerTwo,
   } = props;
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  const user = useSelector((state) => state.user);
-  const playerOne = useSelector((state) => state.playerOne);
+  const correctLetters = useSelector((state) => state.wordBank.correctLetters);
+  const incorrectLetters = useSelector(
+    (state) => state.wordBank.incorrectLetters
+  );
 
-  const dispatch = useDispatch();
   const [alphabetJSXArray, setAlphabetJSXArray] = useState([]);
 
   const strikeRef = useRef(false); //ref used to help track strikes.
   const emptyLettersRef = useRef(false); //empty spaces ref.
-  const incorrectLettersRef = useRef(false);
+  const incorrectLettersRef = useRef(false); //incorrect letters ref.
 
-  //the following let's are used to store values from chosenLetter func below.
-  let incorrectLetterToPush = incorrectLetter;
-  let correctLetterToPush = filledLetter;
-  let emptySpaceCount = emptyLetters;
+  const dispatch = useDispatch();
 
   const styleButtonAfterItIsClicked = (e) => {
+    //player 2 func only
     e.target.disabled = true;
     e.target.style = "visibility: hidden";
   };
+
+  //var's for chosenLetter func
+  let incorrectLetterToPush = incorrectLetter;
+  let correctLetterToPush = filledLetter;
+  let emptySpaceCount = emptyLetters;
 
   const chosenLetter = async (e) => {
     const clickedLetter = e.target.name;
@@ -66,19 +74,39 @@ function AlphabetButtons(props) {
     }
   };
 
-  const generatesTheAlphabet = () => {
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let alphabetLettersArray = [];
+  const changeColorOfChosenLetters = () => {
+    for (let i = 0; i < alphabet.length; i++) {
+      let currentLetter = alphabet[i].toLowerCase();
+      let currentLetterContainer = {
+        [`letter${alphabet[i]}`]: document.getElementById(
+          `${alphabet[i]}-container`
+        ),
+      };
+      alphabetLettersArray.push(currentLetterContainer);
+      if (correctLetters.includes(currentLetter)) {
+        alphabetLettersArray[i][`letter${alphabet[i]}`].style.color = "green";
+      }
+
+      if (incorrectLetters.includes(currentLetter)) {
+        alphabetLettersArray[i][`letter${alphabet[i]}`].style.color = "red";
+      }
+    }
+  };
+
+  // player 2 buttons to guess letters
+  const generatesTheAlphabetButtons = () => {
     let alphabetElementsArray = [];
     for (let i = 0; i < alphabet.length; i++) {
       alphabetElementsArray.push(
-        <Grid item xs={2} key={alphabet[i] + "-letter-container"} px={0}>
+        <Grid item xs={2} key={alphabet[i] + "-letter-button"} px={0}>
           <Button
             variant="text"
             onClick={chosenLetter}
             name={alphabet[i]}
             sx={{ minWidth: "32px", padding: "0" }}
             px={6}
-            disabled={user === playerOne ? true : false}
+            id={alphabet[i] + "-button"}
           >
             {alphabet[i]}
           </Button>
@@ -88,7 +116,29 @@ function AlphabetButtons(props) {
     setAlphabetJSXArray(alphabetElementsArray);
   };
 
+  // player 1 letter display to show which letters P2 picks
+  const generatesTheAlphabet = () => {
+    let alphabetElementsArray = [];
+    for (let i = 0; i < alphabet.length; i++) {
+      alphabetElementsArray.push(
+        <Grid item xs={2} key={alphabet[i] + "-letter-container"} px={0}>
+          <Typography
+            variant="string"
+            // name={alphabet[i]}
+            sx={{ minWidth: "32px", padding: "0" }}
+            px={6}
+            id={alphabet[i] + "-container"}
+          >
+            {alphabet[i]}
+          </Typography>
+        </Grid>
+      );
+    }
+    setAlphabetJSXArray(alphabetElementsArray);
+  };
+
   useEffect(() => {
+    //when a strike occurs
     if (strikeRef.current && incorrectLettersRef.current) {
       strikeRef.current = false;
       incorrectLettersRef.current = false;
@@ -99,7 +149,7 @@ function AlphabetButtons(props) {
           emptyLetters: emptySpaceCount,
         })
       );
-    }
+    } //when empty space filled with a letter
     if (emptyLettersRef.current) {
       emptyLettersRef.current = false;
       dispatch(
@@ -108,9 +158,23 @@ function AlphabetButtons(props) {
           emptyLetters: emptySpaceCount,
         })
       );
+    } //letter display for player one
+    if (user && playerOne && user.username === playerOne.username) {
+      console.log("we aren't player two");
+      generatesTheAlphabet();
+    } //letter display for player two
+    if (user && playerTwo && user.username === playerTwo.username) {
+      generatesTheAlphabetButtons();
     }
-
-    generatesTheAlphabet();
+    if (
+      //change color of letters for player one
+      alphabetJSXArray.length !== 0 &&
+      user &&
+      playerOne &&
+      user.username === playerOne.username
+    ) {
+      changeColorOfChosenLetters();
+    }
   }, [currentStrikes, emptyLetters, incorrectLetter]);
   return (
     <>

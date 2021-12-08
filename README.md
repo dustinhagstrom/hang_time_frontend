@@ -2,6 +2,8 @@ TODOS:
 
 for game page:
 
+- working on synthetic click event to remove button visibility for player one.
+- fix the reload on gamepage to keep letters populated.
 - when the backend can support storage and retrieval of wordBank items, then verify proper operation. current config in FE w/o BE resets wordBank in redux to default word on data page whenever action is dispatched.
 - determine whether I need js-cookie
 - make the game responsive for various screen sizes
