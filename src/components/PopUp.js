@@ -1,17 +1,21 @@
-import { Button, Typography } from "@mui/material";
+import { Button, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { updateStrikesInDB } from "../Data";
+import { addWordToDB, updateStrikesInDB } from "../Data";
 import Home from "../pages/HomePage";
+import {
+  setPlayerOneActionCreator,
+  setPlayerTwoActionCreator,
+} from "../redux/playerState";
 import { newStrikeActionCreator } from "../redux/strikeState";
+import { newWordActionCreator } from "../redux/wordState";
 
-function PopUp(props) {
-  const user = useSelector((state) => state.user);
-  const strikes = useSelector((state) => state.strikes);
-  const dispatch = useDispatch();
+const WelcomeUser = (props) => {
+  const { user } = props;
+
   const navigate = useNavigate();
 
   //below func used when user logs on
@@ -21,44 +25,148 @@ function PopUp(props) {
     }, 2000);
   };
 
-  //below func used when gameover and new game button clicked.
+  useEffect(() => {
+    redirectsUserToGameOptionsOnLogin();
+  }, []);
+
+  return (
+    <>
+      <Typography>
+        Welcome Back {user.username}! Redirecting you to user options...
+      </Typography>
+    </>
+  );
+};
+
+const GameOver = (props) => {
+  const { gameOver, setGameOver, setWord, playerOne, playerTwo } = props;
+
+  const [inputWord, setInputWord] = useState("");
+  const [inputWordLength, setInputWordLength] = useState(0);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const repeatAnotherGame = () => {
-    // const resetStrikes = { strikes: 0 };
-    dispatch(newStrikeActionCreator(null));
-    updateStrikesInDB(null)
+    addWordToDB(inputWord.toUpperCase())
+      .then((res) => {
+        const { wordBank, message } = res;
+        console.log(wordBank);
+        dispatch(newWordActionCreator(wordBank));
+      })
+      .catch((e) => {
+        console.log(e.message);
+      });
+    dispatch(newStrikeActionCreator({ strikes: 0 }));
+    updateStrikesInDB(0)
       .then((response) => console.log(response.message))
       .catch((error) => console.log(error));
-    navigate("/game");
+    setGameOver(false);
+    setWord(inputWord);
   };
 
-  useEffect(() => {
-    if (user && strikes !== 6) {
-      redirectsUserToGameOptionsOnLogin();
-    }
-  }, []);
+  const closeTheSession = () => {
+    dispatch(setPlayerOneActionCreator(null));
+    dispatch(setPlayerTwoActionCreator(null));
+    dispatch(newStrikeActionCreator({ strikes: 0 }));
+    dispatch(newWordActionCreator(null));
+    navigate("/");
+  };
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "column",
-      }}
-    >
-      {/* first block is user on login, second is gameover page */}
-      {user && strikes !== 6 ? (
-        <Typography>
-          Welcome Back {user.username}! Redirecting you to user options...
-        </Typography>
-      ) : (
+    <>
+      <Typography>Game Over</Typography>
+      {playerOne && playerOne.username ? (
         <>
-          <Typography>Game Over</Typography>
-          <Button onClick={repeatAnotherGame}>Play Again?</Button>
-          <Button>Close The Session</Button>
+          <Typography>Please enter a word below</Typography>
+          <TextField
+            sx={{ width: "50%" }}
+            value={inputWord}
+            onChange={(e) => {
+              setInputWord(e.target.value);
+              setInputWordLength(e.target.value.length);
+            }}
+          ></TextField>
+          <Button
+            onClick={repeatAnotherGame}
+            disabled={inputWordLength > 0 ? false : true}
+          >
+            Play Again?
+          </Button>
         </>
+      ) : (
+        <Typography>Waiting on Player One...</Typography>
       )}
-    </Box>
+      <Button onClick={closeTheSession}>Close The Session</Button>
+    </>
   );
+};
+
+const InputNewWord = (props) => {
+  const { setWord } = props;
+  //TODO: if a new game is started then this popup appears to allow
+  // playerOne to put a new word into the game.
+
+  return <div></div>;
+};
+
+function PopUp(props) {
+  const { gameOver, setGameOver, setWord, appCondition } = props;
+  const user = useSelector((state) => state.user);
+  const playerOne = useSelector((state) => state.playerOne);
+  const playerTwo = useSelector((state) => state.playerTwo);
+  console.log(appCondition);
+
+  // const strikes = useSelector((state) => state.strikes);
+
+  const renderComponentsSwitchCase = (condition) => {
+    switch (condition) {
+      case "WelcomeUser":
+        return <WelcomeUser user={user} />;
+      case "GameOver":
+        return (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+              position: "absolute",
+              margin: " 25% auto",
+              background: "hsl(89, 43%, 51%)",
+            }}
+          >
+            <GameOver
+              gameOver={gameOver}
+              setGameOver={setGameOver}
+              setWord={setWord}
+              playerOne={playerOne}
+              playerTwo={playerTwo}
+            />
+          </Box>
+        );
+      case "InputNewGameWord":
+        return (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+              position: "absolute",
+              margin: " 25% auto",
+              background: "hsl(89, 43%, 51%)",
+            }}
+          >
+            <GameOver
+              gameOver={gameOver}
+              setGameOver={setGameOver}
+              setWord={setWord}
+            />
+          </Box>
+        );
+    }
+  };
+
+  return <>{renderComponentsSwitchCase(appCondition)}</>;
 }
 
 export default PopUp;

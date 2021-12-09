@@ -250,8 +250,8 @@ function LoginPage() {
       >
         {error || successMessage}
       </Box>
-      {user ? (
-        <PopUp />
+      {user && user.username ? (
+        <PopUp appCondition={"WelcomeUser"} />
       ) : (
         <Form setError={setError} setSuccessMessage={setSuccessMessage} />
       )}

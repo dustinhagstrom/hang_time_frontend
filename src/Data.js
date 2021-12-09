@@ -120,11 +120,11 @@ export const getWordInfoFromDB = () =>
 //     }, 1000);
 //   });
 
-export const updateStrikesInDB = ({ resetStrikes }) =>
+export const updateStrikesInDB = (newStrikes) =>
   new Promise((resolve, reject) => {
     setTimeout(() => {
       try {
-        strikes.strikes = resetStrikes;
+        strikes.strikes = newStrikes;
         resolve({ message: "strikes updated." });
       } catch (e) {
         reject(e);

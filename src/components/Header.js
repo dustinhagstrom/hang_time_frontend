@@ -18,7 +18,7 @@ function Header() {
         <Typography>Hang Time</Typography>
       </Box>
       <Box>
-        {user ? (
+        {user && user.username ? (
           <Link to="/logout">Logout</Link>
         ) : (
           <Link to="/login">Login</Link>

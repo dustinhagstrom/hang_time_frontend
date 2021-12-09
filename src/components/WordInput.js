@@ -1,84 +1,55 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { addWordToDB } from "../Data";
+import { setPlayerOneActionCreator } from "../redux/playerState";
 import { newWordActionCreator } from "../redux/wordState";
 import Layout from "./Layout";
 
 function WordInput() {
-  const [userInputWord, setUserInputWord] = useState("");
-  //   const [successMessage, setSuccessMessage] = useState();
+  const user = useSelector((state) => state.user);
+  const [inputWord, setInputWord] = useState("");
+  const [inputWordLength, setInputWordLength] = useState(0);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const submitWordToDB = () => {
-    addWordToDB(userInputWord)
-      .then((response) => {
-        console.log(response);
-        const { message } = response;
-        // setSuccessMessage(message);
-        navigate("/game");
+  const submitWord = () => {
+    addWordToDB(inputWord.toUpperCase())
+      .then((res) => {
+        const { wordBank, message } = res;
+        console.log(wordBank);
+        dispatch(newWordActionCreator(wordBank));
+        dispatch(setPlayerOneActionCreator(user));
       })
       .catch((e) => {
-        console.log("error: ", e);
-        // setSuccessMessage(e.message);
+        console.log(e.message);
       });
-    dispatch(newWordActionCreator({ word: userInputWord }));
   };
-
   return (
     <Layout>
-      <Box>
-        <Box
-          sx={{
-            width: "50%",
-            mx: "auto",
-            background: "rgb(255,225,4)",
-            height: "50vh",
-            mt: "10%",
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography>Please enter a word below</Typography>
+        <TextField
+          sx={{ width: "50%" }}
+          value={inputWord}
+          onChange={(e) => {
+            setInputWord(e.target.value);
+            setInputWordLength(e.target.value.length);
           }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-around",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
-            <Box sx={{ width: "100%" }}>
-              <Typography sx={{ border: "black solid 2px", width: "100%" }}>
-                Type any word into the field below
-              </Typography>
-            </Box>
-            <Box sx={{ width: "100%" }}>
-              <TextField
-                value={userInputWord}
-                sx={{ border: "black solid 2px", width: "100%" }}
-                onChange={(e) => {
-                  setUserInputWord(e.target.value);
-                }}
-              />
-            </Box>
-            <Box>
-              <Button onClick={submitWordToDB}>
-                press here to submit word
-              </Button>
-            </Box>
-            <Box sx={{ width: "100%" }}>
-              <Typography sx={{ border: "black solid 2px", width: "100%" }}>
-                Session information displayed here.
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
+        ></TextField>
+        <Button onClick={submitWord}>Submit Word</Button>
       </Box>
     </Layout>
   );
 }
-
 export default WordInput;

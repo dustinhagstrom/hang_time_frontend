@@ -17,6 +17,7 @@ function HostSession() {
   const navigate = useNavigate();
 
   const submitWord = () => {
+    //used in new game (popup.js)
     addWordToDB(inputWord.toUpperCase())
       .then((res) => {
         const { wordBank, message } = res;

@@ -29,6 +29,9 @@ const PlayerScreen = () => {
   });
   //incorrectLetter initial state intentionally omitted
   const [incorrectLetter, setIncorrectLetter] = useState();
+  const [winner, setWinner] = useState("");
+  const [disableButtonsOnGameOver, setDisableButtonsOnGameOver] =
+    useState(false);
 
   // if strikes === 6 -> game over. player one wins
   // if emptyLetters === 0 -> game over. player two wins
@@ -38,19 +41,35 @@ const PlayerScreen = () => {
   const gameOverCondition = () => {
     if (currentStrikes >= 6) {
       //player one wins
+      setGameOver(true);
+      setWinner(playerOne.username);
+      setDisableButtonsOnGameOver(true);
     }
     if (emptyLetters === 0) {
       //player two wins
+      setGameOver(true);
+      setWinner(playerTwo.username);
+      setDisableButtonsOnGameOver(true);
     }
   };
 
+  useEffect(() => {
+    // maybe some logic for gameover???
+    gameOverCondition();
+  }, [currentStrikes, emptyLetters]);
+
   return (
     <>
-      {/* {gameOver ? (
-        <>
-          <PopUp />
-        </>
-      ) : ( */}
+      {gameOver ? (
+        <PopUp
+          gameOver={gameOver}
+          setGameOver={setGameOver}
+          setWord={setWord}
+          appCondition={"GameOver"}
+        />
+      ) : (
+        <></>
+      )}
       <Opponent />
       <Box>
         <Hang />
@@ -70,6 +89,7 @@ const PlayerScreen = () => {
           user={user}
           playerOne={playerOne}
           playerTwo={playerTwo}
+          disableButtonsOnGameOver={disableButtonsOnGameOver}
         />
       </Box>
     </>

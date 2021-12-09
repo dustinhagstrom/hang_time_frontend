@@ -19,7 +19,7 @@ function Word(props) {
 
   useEffect(() => {
     addsLetters();
-  }, []);
+  }, [word]);
   return (
     <Box>
       <Box

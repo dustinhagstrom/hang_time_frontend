@@ -20,12 +20,12 @@ function Home() {
     return navigate("/join");
   };
 
-  useEffect(() => {
-    // call the db for the strike information and the wordBank info
-    getWordInfoFromDB().then((res) => {
-      dispatch(newWordActionCreator(res.wordBank));
-    });
-  }, []);
+  // useEffect(() => {
+  //   // call the db for the strike information and the wordBank info
+  //   getWordInfoFromDB().then((res) => {
+  //     dispatch(newWordActionCreator(res.wordBank));
+  //   });
+  // }, []);
   return (
     <Layout>
       <Box sx={{ position: "relative" }}>
@@ -38,7 +38,7 @@ function Home() {
             top: "0%",
           }}
         >
-          {user ? (
+          {user && user.username ? (
             <Typography></Typography>
           ) : (
             <Typography>
@@ -67,7 +67,7 @@ function Home() {
             <Box sx={{ width: "100%" }}>
               <Button
                 sx={{ border: "black solid 2px", width: "100%" }}
-                disabled={user ? false : true}
+                disabled={user && user.username ? false : true}
                 onClick={createASession}
               >
                 Create a Session
@@ -76,7 +76,7 @@ function Home() {
             <Box sx={{ width: "100%" }}>
               <Button
                 sx={{ border: "black solid 2px", width: "100%" }}
-                disabled={user ? false : true}
+                disabled={user && user.username ? false : true}
                 onClick={joinASession}
               >
                 Join a Session

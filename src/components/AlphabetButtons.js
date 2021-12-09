@@ -20,6 +20,7 @@ function AlphabetButtons(props) {
     user,
     playerOne,
     playerTwo,
+    disableButtonsOnGameOver,
   } = props;
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -36,17 +37,16 @@ function AlphabetButtons(props) {
 
   const dispatch = useDispatch();
 
+  //player 2 func remove letter button after it is clicked
   const styleButtonAfterItIsClicked = (e) => {
-    //player 2 func only
     e.target.disabled = true;
     e.target.style = "visibility: hidden";
   };
 
-  //var's for chosenLetter func
+  //player 2 func onClick vis: hidden for letter buttons
   let incorrectLetterToPush = incorrectLetter;
   let correctLetterToPush = filledLetter;
   let emptySpaceCount = emptyLetters;
-
   const chosenLetter = async (e) => {
     const clickedLetter = e.target.name;
     styleButtonAfterItIsClicked(e);
@@ -74,6 +74,7 @@ function AlphabetButtons(props) {
     }
   };
 
+  //player one func to change color of letter display
   let alphabetLettersArray = [];
   const changeColorOfChosenLetters = () => {
     for (let i = 0; i < alphabet.length; i++) {
@@ -107,6 +108,7 @@ function AlphabetButtons(props) {
             sx={{ minWidth: "32px", padding: "0" }}
             px={6}
             id={alphabet[i] + "-button"}
+            disabled={disableButtonsOnGameOver}
           >
             {alphabet[i]}
           </Button>
@@ -124,7 +126,6 @@ function AlphabetButtons(props) {
         <Grid item xs={2} key={alphabet[i] + "-letter-container"} px={0}>
           <Typography
             variant="string"
-            // name={alphabet[i]}
             sx={{ minWidth: "32px", padding: "0" }}
             px={6}
             id={alphabet[i] + "-container"}
@@ -175,7 +176,7 @@ function AlphabetButtons(props) {
     ) {
       changeColorOfChosenLetters();
     }
-  }, [currentStrikes, emptyLetters, incorrectLetter]);
+  }, [currentStrikes, emptyLetters, incorrectLetter, disableButtonsOnGameOver]);
   return (
     <>
       <Grid
