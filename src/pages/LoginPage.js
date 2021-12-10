@@ -3,14 +3,15 @@ import { Box } from "@mui/system";
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { logInUser, signUpUser } from "../Data";
+
+import { axiosErrorMessage, logInUser, signUpUser } from "../Data";
 import { logInActionCreator } from "../redux/userState";
 import Layout from "../components/Layout";
 import PopUp from "../components/PopUp";
 
 const Form = (props) => {
   const { setError, setSuccessMessage } = props;
-  //var's below set to allow login initially. (no user => then signup instead);
+
   const [isARegisteredUser, setIsARegisteredUser] = useState(true);
   let buttonName = isARegisteredUser ? "Login" : "Sign Up";
 
@@ -27,25 +28,31 @@ const Form = (props) => {
 
   const onSubmit = () => {
     logInUser(email, password)
-      .then((user) => dispatch(logInActionCreator(user)))
+      .then((res) => {
+        const userData = res.data.user;
+        const successfulLoginMessage = res.data.message;
+        dispatch(logInActionCreator(userData));
+        setSuccessMessage(successfulLoginMessage);
+      })
       .catch((e) => {
-        console.log("error: ", e);
-        setError(e.message);
+        let errMessage = axiosErrorMessage(e);
+        setError(errMessage);
       });
   };
 
   const onSignUp = () => {
     signUpUser(email, password, username, firstName, lastName)
-      .then((response) => {
-        console.log(response);
-        const { successMessage } = response;
-        setSuccessMessage(successMessage);
-        toggleIsARegisteredUser(); //this toggles Boolean and clears input fields.
+      .then((res) => {
+        console.log(res);
+        const { message } = res.data;
+        setSuccessMessage(message);
+        setTimeout(() => {
+          toggleIsARegisteredUser();
+        }, 1000);
       })
       .catch((e) => {
-        //if error then the input fields do not
-        console.log("error: ", e);
-        setError(e.message);
+        let errMessage = axiosErrorMessage(e);
+        setError(errMessage);
       });
   };
 

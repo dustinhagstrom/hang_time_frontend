@@ -4,28 +4,11 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Layout from "../components/Layout";
 import { useNavigate } from "react-router";
-import { getWordInfoFromDB } from "../Data";
-import { newWordActionCreator } from "../redux/wordState";
+import { Link } from "react-router-dom";
 
 function Home() {
   const user = useSelector((state) => state.user);
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const createASession = () => {
-    return navigate("/host");
-  };
-  const joinASession = () => {
-    return navigate("/join");
-  };
-
-  // useEffect(() => {
-  //   // call the db for the strike information and the wordBank info
-  //   getWordInfoFromDB().then((res) => {
-  //     dispatch(newWordActionCreator(res.wordBank));
-  //   });
-  // }, []);
   return (
     <Layout>
       <Box sx={{ position: "relative" }}>
@@ -65,22 +48,24 @@ function Home() {
             }}
           >
             <Box sx={{ width: "100%" }}>
-              <Button
-                sx={{ border: "black solid 2px", width: "100%" }}
-                disabled={user && user.username ? false : true}
-                onClick={createASession}
-              >
-                Create a Session
-              </Button>
+              <Link to="/host">
+                <Button
+                  sx={{ border: "black solid 2px", width: "100%" }}
+                  disabled={user && user.username ? false : true}
+                >
+                  Create a Session
+                </Button>
+              </Link>
             </Box>
             <Box sx={{ width: "100%" }}>
-              <Button
-                sx={{ border: "black solid 2px", width: "100%" }}
-                disabled={user && user.username ? false : true}
-                onClick={joinASession}
-              >
-                Join a Session
-              </Button>
+              <Link to="/join">
+                <Button
+                  sx={{ border: "black solid 2px", width: "100%" }}
+                  disabled={user && user.username ? false : true}
+                >
+                  Join a Session
+                </Button>
+              </Link>
             </Box>
           </Box>
         </Box>

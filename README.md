@@ -1,5 +1,9 @@
 TODOS:
 
+for login page:
+
+- (if I have time) make a success message overwrite an error message
+
 for game page:
 
 - fix the reload on gamepage to keep filled letters populated and to keep the letter buttons invisible and disabled. same with the opponent field.
@@ -40,6 +44,7 @@ Optional things:
 
 TO FIGURE OUT:
 
+- memory leak prolly due to setTimeout funcs for success and error messages.
 - how to have multiple sessions at one time with one db.
 - should I even have a db that tracks strikes? or should I do something that persists on the front end during game play?
 -

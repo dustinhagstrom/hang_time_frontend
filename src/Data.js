@@ -1,21 +1,52 @@
-export const userData = [
-  {
-    id: "123",
-    email: "d",
-    username: "dusty",
-    password: "d",
-    firstName: "dustin",
-    lastName: "hagstrom",
-  },
-  {
-    id: "234",
-    email: "justin@email.com",
-    username: "justin",
-    password: "password",
-    firstName: "justin",
-    lastName: "lastname",
-  },
-];
+import Axios from "./Axios";
+
+export const strikes = {
+  strikes: 0,
+};
+
+export const axiosErrorMessage = (e) => {
+  if (e.response) {
+    let errorMessage = e.response.data.message;
+
+    return errorMessage;
+  }
+};
+
+export const logInUser = async (email, password) =>
+  Axios({
+    method: "post",
+    url: "/users/loginUser",
+    data: {
+      email,
+      password,
+    },
+  });
+
+export const signUpUser = async (
+  email,
+  password,
+  username,
+  firstName,
+  lastName
+) =>
+  Axios({
+    method: "post",
+    url: "/users/new",
+    data: {
+      email,
+      password,
+      username,
+      firstName,
+      lastName,
+    },
+  });
+
+export const addWordToDB = async (wordBank) =>
+  Axios({
+    method: "post",
+    url: "/word/new",
+    data: wordBank,
+  });
 
 export const wordBank = {
   word: "HAPPY",
@@ -24,89 +55,20 @@ export const wordBank = {
   incorrectLetters: [],
 };
 
-export const strikes = {
-  strikes: 0,
-};
-
-export const logInUser = (email, password) =>
-  new Promise((resolve, reject) => {
-    // .find method is taking a callback func as arg here.
-    const userFound = userData.find((user) => {
-      if (user.email === email && user.password === password) {
-        return true;
-      }
-      return false;
-    });
-
-    console.log("fetching data from the imaginary database");
-    setTimeout(() => {
-      try {
-        if (userFound) {
-          const { email, username } = userFound;
-          let onlyNecessaryUserData = { email, username };
-          resolve(onlyNecessaryUserData);
-        }
-        throw new Error("Incorrect username or password");
-      } catch (e) {
-        reject(e);
-      }
-    }, 1000);
-  });
-
-export const signUpUser = (email, password, username, firstName, lastName) =>
-  new Promise((resolve, reject) => {
-    const userFound = userData.find((user) => {
-      if (user.email === email || user.username === username) {
-        return true;
-      }
-      return false;
-    });
-
-    setTimeout(() => {
-      try {
-        if (userFound) {
-          throw new Error("The email or username already exists!");
-        }
-        userData.push({
-          id: userData.length + 1,
-          email,
-          password,
-          username,
-          firstName,
-          lastName,
-        });
-        resolve({ successMessage: "user created successfully, please login." });
-      } catch (e) {
-        reject(e);
-      }
-    }, 1000);
-  });
-
-export const addWordToDB = (word) =>
-  new Promise((resolve, reject) => {
-    setTimeout(() => {
-      try {
-        wordBank.word = word;
-        wordBank.emptyLetters = word.length;
-        wordBank.correctLetters = [];
-        wordBank.incorrectLetters = [];
-        resolve({ message: "word is approved.", wordBank });
-      } catch (e) {
-        reject(e);
-      }
-    }, 1000);
-  });
-
-export const getWordInfoFromDB = () =>
-  new Promise((resolve, reject) => {
-    setTimeout(() => {
-      try {
-        resolve({ wordBank });
-      } catch (e) {
-        reject(e);
-      }
-    }, 1000);
-  });
+// export const addWordToDB = (word) =>
+//   new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       try {
+//         wordBank.word = word;
+//         wordBank.emptyLetters = word.length;
+//         wordBank.correctLetters = [];
+//         wordBank.incorrectLetters = [];
+//         resolve({ message: "word is approved.", wordBank });
+//       } catch (e) {
+//         reject(e);
+//       }
+//     }, 1000);
+//   });
 
 // export const getStrikeInfoFromDB = (word) =>
 //   new Promise((resolve, reject) => {

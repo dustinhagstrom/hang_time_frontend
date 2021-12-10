@@ -18,13 +18,18 @@ function HostSession() {
 
   const submitWord = () => {
     //used in new game (popup.js)
-    addWordToDB(inputWord.toUpperCase())
+    const wordBank = {
+      word: inputWord.toUpperCase(),
+      emptyLetters: inputWordLength,
+    };
+
+    addWordToDB(wordBank)
       .then((res) => {
-        const { wordBank, message } = res;
-        console.log(wordBank);
-        dispatch(newWordActionCreator(wordBank));
-        dispatch(setPlayerOneActionCreator(user));
-        navigate("/game");
+        console.log(res.data);
+        // const { payload, message } = res.data;
+        // dispatch(newWordActionCreator(payload));
+        // dispatch(setPlayerOneActionCreator(user));
+        // navigate("/game");
       })
       .catch((e) => {
         console.log(e.message);
