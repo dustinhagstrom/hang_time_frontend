@@ -55,32 +55,12 @@ export const wordBank = {
   incorrectLetters: [],
 };
 
-// export const addWordToDB = (word) =>
-//   new Promise((resolve, reject) => {
-//     setTimeout(() => {
-//       try {
-//         wordBank.word = word;
-//         wordBank.emptyLetters = word.length;
-//         wordBank.correctLetters = [];
-//         wordBank.incorrectLetters = [];
-//         resolve({ message: "word is approved.", wordBank });
-//       } catch (e) {
-//         reject(e);
-//       }
-//     }, 1000);
-//   });
-
-// export const getStrikeInfoFromDB = (word) =>
-//   new Promise((resolve, reject) => {
-//     setTimeout(() => {
-//       try {
-//         wordBank.word = word;
-//         resolve({ message: "word is approved." });
-//       } catch (e) {
-//         reject(e);
-//       }
-//     }, 1000);
-//   });
+export const addPlayerTwoDataToWord = async (email, sessionID) =>
+  Axios({
+    method: "put",
+    url: "/word/playerTwo",
+    data: { email, sessionID },
+  });
 
 export const updateStrikesInDB = (newStrikes) =>
   new Promise((resolve, reject) => {

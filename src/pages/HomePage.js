@@ -3,7 +3,6 @@ import { Box } from "@mui/system";
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Layout from "../components/Layout";
-import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 
 function Home() {
@@ -48,24 +47,24 @@ function Home() {
             }}
           >
             <Box sx={{ width: "100%" }}>
-              <Link to="/host">
-                <Button
-                  sx={{ border: "black solid 2px", width: "100%" }}
-                  disabled={user && user.username ? false : true}
-                >
-                  Create a Session
-                </Button>
-              </Link>
+              <Button
+                sx={{ border: "black solid 2px", width: "100%" }}
+                disabled={user && user.username ? false : true}
+                component={Link}
+                to="/host"
+              >
+                Create a Session
+              </Button>
             </Box>
             <Box sx={{ width: "100%" }}>
-              <Link to="/join">
-                <Button
-                  sx={{ border: "black solid 2px", width: "100%" }}
-                  disabled={user && user.username ? false : true}
-                >
-                  Join a Session
-                </Button>
-              </Link>
+              <Button
+                sx={{ border: "black solid 2px", width: "100%" }}
+                disabled={user && user.username ? false : true}
+                component={Link}
+                to="/join"
+              >
+                Join a Session
+              </Button>
             </Box>
           </Box>
         </Box>

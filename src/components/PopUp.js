@@ -39,7 +39,7 @@ const WelcomeUser = (props) => {
 };
 
 const GameOver = (props) => {
-  const { gameOver, setGameOver, setWord, playerOne, playerTwo } = props;
+  const { gameOver, setGameOver, setWord, playerOne, playerTwo, user } = props;
 
   const [inputWord, setInputWord] = useState("");
   const [inputWordLength, setInputWordLength] = useState(0);
@@ -74,7 +74,7 @@ const GameOver = (props) => {
   return (
     <>
       <Typography>Game Over</Typography>
-      {playerOne && playerOne.username ? (
+      {playerOne && playerOne.username === user.username ? (
         <>
           <Typography>Please enter a word below</Typography>
           <TextField
@@ -140,6 +140,7 @@ function PopUp(props) {
               setWord={setWord}
               playerOne={playerOne}
               playerTwo={playerTwo}
+              user={user}
             />
           </Box>
         );

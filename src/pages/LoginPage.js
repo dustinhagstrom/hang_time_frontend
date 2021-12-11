@@ -245,6 +245,7 @@ function LoginPage() {
       }, 5000);
     }
   }, [error, successMessage]);
+
   return (
     <Layout>
       <Box

@@ -8,6 +8,7 @@ import Opponent from "../components/Opponent";
 import PopUp from "../components/PopUp";
 import Strikes from "../components/Strikes";
 import Word from "../components/Word";
+import { PusherProvider, usePusher } from "../PusherContext";
 
 const PlayerScreen = () => {
   const strikesObj = useSelector((state) => state.strikes);
@@ -19,7 +20,7 @@ const PlayerScreen = () => {
   const initialStrikes = strikesObj.strikes;
   const initialEmptyLetters = wordObj.emptyLetters;
   console.log("playerScreen re-render");
-  const dispatch = useDispatch();
+  const pusher = usePusher();
 
   const [word, setWord] = useState(initialWord);
   const [currentStrikes, setCurrentStrikes] = useState(initialStrikes);
@@ -32,6 +33,7 @@ const PlayerScreen = () => {
   const [winner, setWinner] = useState("");
   const [disableButtonsOnGameOver, setDisableButtonsOnGameOver] =
     useState(false);
+  const [gameID, setGameID] = useState(wordObj.gameID);
 
   // if strikes === 6 -> game over. player one wins
   // if emptyLetters === 0 -> game over. player two wins
@@ -52,6 +54,22 @@ const PlayerScreen = () => {
       setDisableButtonsOnGameOver(true);
     }
   };
+
+  useEffect(() => {
+    //data should include word data and strikes data
+
+    function hangEventHandler(data) {
+      //some logic to update stores
+      console.log(data.payload);
+    }
+    const channel = pusher.subscribe(gameID);
+    channel.bind("hangEvent", hangEventHandler);
+
+    return () => {
+      //this is cleanup func
+      channel.unbind("hangEvent", hangEventHandler);
+    };
+  }, [currentStrikes, pusher, wordObj]); //might have to change wordOBJ
 
   useEffect(() => {
     // maybe some logic for gameover???
@@ -98,17 +116,19 @@ const PlayerScreen = () => {
 
 function Game() {
   return (
-    <Layout>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-evenly",
-          minHeight: "70vh",
-        }}
-      >
-        <PlayerScreen />
-      </Box>
-    </Layout>
+    <PusherProvider>
+      <Layout>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-evenly",
+            minHeight: "70vh",
+          }}
+        >
+          <PlayerScreen />
+        </Box>
+      </Layout>
+    </PusherProvider>
   );
 }
 
