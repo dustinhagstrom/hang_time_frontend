@@ -14,13 +14,11 @@ function HostSession() {
   const [inputWord, setInputWord] = useState("");
   const [inputWordLength, setInputWordLength] = useState(0);
   const [isDisabled, setIsDisabled] = useState(false);
-  const [sessionID, setSessionID] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const submitWord = (e) => {
-    //used in new game (popup.js)
     setIsDisabled(true);
     const wordBank = {
       word: inputWord.toUpperCase(),
@@ -34,7 +32,7 @@ function HostSession() {
         const { payload, message } = res.data;
         dispatch(newWordActionCreator(payload));
         dispatch(setPlayerOneActionCreator(user));
-        setSessionID(payload.gameID);
+        navigate("/game");
       })
       .catch((e) => {
         console.log(e.message);
@@ -62,17 +60,6 @@ function HostSession() {
         <Button onClick={submitWord} disabled={isDisabled}>
           Submit Word
         </Button>
-        {sessionID ? (
-          <Box>
-            <Typography>Your Session ID:</Typography>
-            <Typography>{sessionID}</Typography>
-            <Button component={Link} to="/game">
-              ---- Go to Game ----
-            </Button>
-          </Box>
-        ) : (
-          <></>
-        )}
       </Box>
     </Layout>
   );

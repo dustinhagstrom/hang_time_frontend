@@ -1,4 +1,4 @@
-import { wordBank } from "../Data";
+//I just removed the hardcoded wordBank. Now I have to make transition to db/redux wordbank usage in my functions below.
 
 const WORD_INITIAL_STATE = { wordBank: null };
 
@@ -17,7 +17,7 @@ export const newWordActionCreator = (wordBank) => {
 };
 
 export const updateCorrectLettersActionCreator = (clickedLetters) => {
-  const { correctLetters, emptyLetters } = clickedLetters;
+  const { correctLetters, emptyLetters, wordBank } = clickedLetters;
 
   let newWordBank = { ...wordBank, emptyLetters: emptyLetters };
   newWordBank.correctLetters.push(correctLetters);
@@ -29,9 +29,9 @@ export const updateCorrectLettersActionCreator = (clickedLetters) => {
 };
 
 export const updateIncorrectLettersActionCreator = (clickedLetters) => {
-  const { incorrectLetters, emptyLetters } = clickedLetters;
+  const { incorrectLetters, wordBank } = clickedLetters;
 
-  let newWordBank = { ...wordBank, emptyLetters: emptyLetters };
+  let newWordBank = { ...wordBank };
   newWordBank.incorrectLetters.push(incorrectLetters);
 
   return {

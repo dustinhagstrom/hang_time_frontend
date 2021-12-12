@@ -13,25 +13,6 @@ import { PersistGate } from "redux-persist/integration/react";
 import { useSelector } from "react-redux";
 import { PusherProvider } from "./PusherContext";
 
-// //PUSHER LOGIC | |
-// //            _| |_
-// //            \   /
-// //             \ /
-// //              V
-// Pusher.logToConsole = true; //remove for production.
-
-// const pusher = new Pusher("32df36bb46bc6f0674ee", {
-//   cluster: "us2",
-// });
-
-// const channel = pusher.subscribe(gameID);
-// channel.bind("hangEvent", (data) => {
-//   console.log(data);
-// });
-// //
-// //
-// //       END PUSHER LOGIC
-
 function App() {
   return (
     <ReduxProvider store={store}>

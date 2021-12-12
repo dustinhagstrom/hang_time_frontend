@@ -9,20 +9,21 @@ import {
   setPlayerOneActionCreator,
   setPlayerTwoActionCreator,
 } from "../redux/playerState";
-import { addPlayerTwoDataToWord, axiosErrorMessage } from "../Data";
+import { addPlayerTwoDataToWord } from "../Data";
 import { newWordActionCreator } from "../redux/wordState";
+import { axiosErrorMessage } from "../Axios";
 
 function JoinSession() {
   const user = useSelector((state) => state.user);
 
-  const [sessionID, setSessionID] = useState("");
+  const [gameID, setGameID] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const GoToGameAsPlayerTwo = () => {
     const { email } = user;
-    addPlayerTwoDataToWord(email, sessionID)
+    addPlayerTwoDataToWord(email, gameID)
       .then((res) => {
         const { message, payload } = res.data;
 
@@ -50,8 +51,8 @@ function JoinSession() {
         <Typography>Please enter Session information below</Typography>
         <TextField
           sx={{ width: "50%" }}
-          value={sessionID}
-          onChange={(e) => setSessionID(e.target.value.toUpperCase())}
+          value={gameID}
+          onChange={(e) => setGameID(e.target.value.toUpperCase())}
         ></TextField>
         <Button onClick={GoToGameAsPlayerTwo}>Join Session</Button>
       </Box>

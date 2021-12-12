@@ -3,7 +3,9 @@ import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-function Opponent() {
+function Opponent(props) {
+  const { gameID } = props;
+
   const user = useSelector((state) => state.user);
   const playerOne = useSelector((state) => state.playerOne);
   const playerTwo = useSelector((state) => state.playerTwo);
@@ -12,7 +14,9 @@ function Opponent() {
 
   useEffect(() => {
     if (user && playerOne && playerTwo) {
-      user === playerOne ? setOpponent(playerTwo) : setOpponent(playerOne);
+      user.username === playerOne.username
+        ? setOpponent(playerTwo)
+        : setOpponent(playerOne);
     }
   }, []);
 
@@ -21,9 +25,8 @@ function Opponent() {
       <Typography>
         {typeof opponent === "object" ? opponent.username : opponent}
       </Typography>
-      <button onClick={() => setOpponent({ username: "krusty" })}>
-        krusty gonna come
-      </button>
+      <Typography>Your Session ID:</Typography>
+      <Typography>{gameID}</Typography>
     </Box>
   );
 }

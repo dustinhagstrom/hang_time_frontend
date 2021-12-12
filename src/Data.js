@@ -1,16 +1,4 @@
-import Axios from "./Axios";
-
-export const strikes = {
-  strikes: 0,
-};
-
-export const axiosErrorMessage = (e) => {
-  if (e.response) {
-    let errorMessage = e.response.data.message;
-
-    return errorMessage;
-  }
-};
+import { Axios } from "./Axios";
 
 export const logInUser = async (email, password) =>
   Axios({
@@ -48,25 +36,36 @@ export const addWordToDB = async (wordBank) =>
     data: wordBank,
   });
 
-export const wordBank = {
-  word: "HAPPY",
-  emptyLetters: 5,
-  correctLetters: [],
-  incorrectLetters: [],
-};
-
-export const addPlayerTwoDataToWord = async (email, sessionID) =>
+export const addPlayerTwoDataToWord = async (email, gameID) =>
   Axios({
     method: "put",
     url: "/word/playerTwo",
-    data: { email, sessionID },
+    data: { email, gameID },
+  });
+
+export const addCorrectLettersToWord = async ({
+  correctLetters,
+  emptyLetters,
+  gameID,
+}) =>
+  Axios({
+    method: "put",
+    url: "/word/correct",
+    data: { correctLetters, emptyLetters, gameID },
+  });
+
+export const addIncorrectLettersToWord = async ({ incorrectLetters, gameID }) =>
+  Axios({
+    method: "put",
+    url: "/word/incorrect",
+    data: { incorrectLetters, gameID },
   });
 
 export const updateStrikesInDB = (newStrikes) =>
   new Promise((resolve, reject) => {
     setTimeout(() => {
       try {
-        strikes.strikes = newStrikes;
+        // strikes.strikes = newStrikes;
         resolve({ message: "strikes updated." });
       } catch (e) {
         reject(e);

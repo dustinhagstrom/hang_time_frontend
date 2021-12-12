@@ -1,6 +1,7 @@
 import { Button, Grid, Typography } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { addCorrectLettersToWord, addIncorrectLettersToWord } from "../Data";
 import { newStrikeActionCreator } from "../redux/strikeState";
 import {
   updateCorrectLettersActionCreator,
@@ -21,13 +22,13 @@ function AlphabetButtons(props) {
     playerOne,
     playerTwo,
     disableButtonsOnGameOver,
+    gameID,
   } = props;
   const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  const correctLetters = useSelector((state) => state.wordBank.correctLetters);
-  const incorrectLetters = useSelector(
-    (state) => state.wordBank.incorrectLetters
-  );
+  const wordBank = useSelector((state) => state.wordBank);
+  const correctLetters = wordBank.correctLetters;
+  const incorrectLetters = wordBank.incorrectLetters;
 
   const [alphabetJSXArray, setAlphabetJSXArray] = useState([]);
 
@@ -47,6 +48,7 @@ function AlphabetButtons(props) {
   let incorrectLetterToPush = incorrectLetter;
   let correctLetterToPush = filledLetter;
   let emptySpaceCount = emptyLetters;
+
   const chosenLetter = async (e) => {
     const clickedLetter = e.target.name;
     styleButtonAfterItIsClicked(e);
@@ -65,7 +67,7 @@ function AlphabetButtons(props) {
         filledLetter: correctLetterToPush,
       });
     } else {
-      // TODO: hit the db to update incorrectLetters && emptyLetters
+      // TODO: hit the db to update incorrectLetters && strikes
       incorrectLetterToPush = clickedLetter;
       incorrectLettersRef.current = true;
       setIncorrectLetter(incorrectLetterToPush);
@@ -78,17 +80,18 @@ function AlphabetButtons(props) {
   let alphabetLettersArray = [];
   const changeColorOfChosenLetters = () => {
     for (let i = 0; i < alphabet.length; i++) {
-      let currentLetter = alphabet[i].toLowerCase();
+      let currentLetter = alphabet[i].toUpperCase();
       let currentLetterContainer = {
         [`letter${alphabet[i]}`]: document.getElementById(
           `${alphabet[i]}-container`
         ),
       };
       alphabetLettersArray.push(currentLetterContainer);
+      //correct letter
       if (correctLetters.includes(currentLetter)) {
         alphabetLettersArray[i][`letter${alphabet[i]}`].style.color = "green";
       }
-
+      //incorrect letter
       if (incorrectLetters.includes(currentLetter)) {
         alphabetLettersArray[i][`letter${alphabet[i]}`].style.color = "red";
       }
@@ -146,19 +149,26 @@ function AlphabetButtons(props) {
       dispatch(newStrikeActionCreator({ strikes: currentStrikes }));
       dispatch(
         updateIncorrectLettersActionCreator({
+          wordBank,
           incorrectLetters: incorrectLetter,
-          emptyLetters: emptySpaceCount,
         })
       );
+      addIncorrectLettersToWord({ incorrectLetters: incorrectLetter, gameID });
     } //when empty space filled with a letter
     if (emptyLettersRef.current) {
       emptyLettersRef.current = false;
       dispatch(
         updateCorrectLettersActionCreator({
+          wordBank,
           correctLetters: correctLetterToPush,
           emptyLetters: emptySpaceCount,
         })
       );
+      addCorrectLettersToWord({
+        correctLetters: correctLetterToPush,
+        emptyLetters: emptySpaceCount,
+        gameID: gameID,
+      });
     } //letter display for player one
     if (user && playerOne && user.username === playerOne.username) {
       console.log("we aren't player two");
@@ -174,9 +184,18 @@ function AlphabetButtons(props) {
       playerOne &&
       user.username === playerOne.username
     ) {
+      console.log("this code block running like it should");
       changeColorOfChosenLetters();
     }
-  }, [currentStrikes, emptyLetters, incorrectLetter, disableButtonsOnGameOver]);
+  }, [
+    currentStrikes,
+    emptyLetters,
+    incorrectLetter,
+    filledLetter,
+    wordBank,
+    disableButtonsOnGameOver,
+  ]);
+
   return (
     <>
       <Grid

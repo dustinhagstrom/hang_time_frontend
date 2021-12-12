@@ -4,10 +4,11 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
-import { axiosErrorMessage, logInUser, signUpUser } from "../Data";
+import { logInUser, signUpUser } from "../Data";
 import { logInActionCreator } from "../redux/userState";
 import Layout from "../components/Layout";
 import PopUp from "../components/PopUp";
+import { axiosErrorMessage } from "../Axios";
 
 const Form = (props) => {
   const { setError, setSuccessMessage } = props;

@@ -9,6 +9,11 @@ import PopUp from "../components/PopUp";
 import Strikes from "../components/Strikes";
 import Word from "../components/Word";
 import { PusherProvider, usePusher } from "../PusherContext";
+import { setPlayerTwoActionCreator } from "../redux/playerState";
+import {
+  updateCorrectLettersActionCreator,
+  updateIncorrectLettersActionCreator,
+} from "../redux/wordState";
 
 const PlayerScreen = () => {
   const strikesObj = useSelector((state) => state.strikes);
@@ -16,11 +21,17 @@ const PlayerScreen = () => {
   const playerTwo = useSelector((state) => state.playerTwo);
   const playerOne = useSelector((state) => state.playerOne);
   const wordObj = useSelector((state) => state.wordBank);
+
+  const [gameID, setGameID] = useState(wordObj.gameID); //CHANNEL NAME
+  const pusher = usePusher(); //EXTRACT PUSHER (value) from closest provider
+  const channel = pusher.subscribe(gameID); //PUSHER CHANNEL SUBSCRIPTION
+
+  const dispatch = useDispatch();
+
   const initialWord = wordObj.word;
   const initialStrikes = strikesObj.strikes;
   const initialEmptyLetters = wordObj.emptyLetters;
   console.log("playerScreen re-render");
-  const pusher = usePusher();
 
   const [word, setWord] = useState(initialWord);
   const [currentStrikes, setCurrentStrikes] = useState(initialStrikes);
@@ -33,7 +44,6 @@ const PlayerScreen = () => {
   const [winner, setWinner] = useState("");
   const [disableButtonsOnGameOver, setDisableButtonsOnGameOver] =
     useState(false);
-  const [gameID, setGameID] = useState(wordObj.gameID);
 
   // if strikes === 6 -> game over. player one wins
   // if emptyLetters === 0 -> game over. player two wins
@@ -55,24 +65,46 @@ const PlayerScreen = () => {
     }
   };
 
+  //PUSHER USE EFFECT
   useEffect(() => {
-    //data should include word data and strikes data
-
-    function hangEventHandler(data) {
-      //some logic to update stores
+    //P2 joins game
+    function p2JoinHandler(data) {
       console.log(data.payload);
+      dispatch(setPlayerTwoActionCreator(data.payload));
     }
-    const channel = pusher.subscribe(gameID);
-    channel.bind("hangEvent", hangEventHandler);
+    //correct Letter guessed
+    function correctLetterEventHandler(data) {
+      dispatch(
+        updateCorrectLettersActionCreator({
+          wordBank: wordObj,
+          correctLetters: data.payload.correctLetters,
+          emptyLetters: data.payload.emptyLetters,
+        })
+      );
+    }
+    //incorrect Letter guessed
+    function incorrectLetterEventHandler(data) {
+      dispatch(
+        updateIncorrectLettersActionCreator({
+          wordBank: wordObj,
+          incorrectLetters: data.payload.incorrectLetters,
+        })
+      );
+    }
+
+    channel.bind("P2joinEvent", p2JoinHandler);
+    channel.bind("correctLetterEvent", correctLetterEventHandler);
+    channel.bind("incorrectLetterEvent", incorrectLetterEventHandler);
 
     return () => {
       //this is cleanup func
-      channel.unbind("hangEvent", hangEventHandler);
+      channel.unbind("P2joinEvent", p2JoinHandler);
+      channel.unbind("correctLetterEvent", correctLetterEventHandler);
+      channel.unbind("incorrectLetterEvent", incorrectLetterEventHandler);
     };
-  }, [currentStrikes, pusher, wordObj]); //might have to change wordOBJ
+  }, [currentStrikes, emptyLetters, pusher, wordObj]); //might have to change wordOBJ
 
   useEffect(() => {
-    // maybe some logic for gameover???
     gameOverCondition();
   }, [currentStrikes, emptyLetters]);
 
@@ -88,7 +120,7 @@ const PlayerScreen = () => {
       ) : (
         <></>
       )}
-      <Opponent />
+      <Opponent gameID={gameID} />
       <Box>
         <Hang />
         <Word word={word} />
@@ -108,6 +140,7 @@ const PlayerScreen = () => {
           playerOne={playerOne}
           playerTwo={playerTwo}
           disableButtonsOnGameOver={disableButtonsOnGameOver}
+          gameID={gameID}
         />
       </Box>
     </>

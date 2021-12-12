@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const Axios = axios.create({
+export const Axios = axios.create({
   baseURL:
     process.env.REACT_APP_AXIOS === "development"
       ? "http://localhost:3001/api"
@@ -8,4 +8,10 @@ const Axios = axios.create({
   timeout: 50000,
 });
 
-export default Axios;
+export const axiosErrorMessage = (e) => {
+  if (e.response) {
+    let errorMessage = e.response.data.message;
+
+    return errorMessage;
+  }
+};
