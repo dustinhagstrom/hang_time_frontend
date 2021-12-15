@@ -16,7 +16,6 @@ import {
 } from "../redux/wordState";
 
 const PlayerScreen = () => {
-  const strikesObj = useSelector((state) => state.strikes);
   const user = useSelector((state) => state.user);
   const playerTwo = useSelector((state) => state.playerTwo);
   const playerOne = useSelector((state) => state.playerOne);
@@ -29,7 +28,7 @@ const PlayerScreen = () => {
   const dispatch = useDispatch();
 
   const initialWord = wordObj.word;
-  const initialStrikes = strikesObj.strikes;
+  const initialStrikes = wordObj.strikes;
   const initialEmptyLetters = wordObj.emptyLetters;
   console.log("playerScreen re-render");
 
@@ -67,6 +66,7 @@ const PlayerScreen = () => {
 
   //PUSHER USE EFFECT
   useEffect(() => {
+    console.log("useEffect: ", currentStrikes, emptyLetters, wordObj);
     //P2 joins game
     function p2JoinHandler(data) {
       console.log(data.payload);

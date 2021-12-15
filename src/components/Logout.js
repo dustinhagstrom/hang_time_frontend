@@ -8,7 +8,6 @@ import {
 
 import Home from "../pages/HomePage";
 import { newWordActionCreator } from "../redux/wordState";
-import { newStrikeActionCreator } from "../redux/strikeState";
 import { logInActionCreator } from "../redux/userState";
 
 //reset redux stores and return home component
@@ -19,7 +18,6 @@ function Logout() {
     dispatch(logInActionCreator(null));
     dispatch(setPlayerOneActionCreator(null));
     dispatch(setPlayerTwoActionCreator(null));
-    dispatch(newStrikeActionCreator({ strikes: 0 }));
     dispatch(newWordActionCreator(null));
   }, []);
 

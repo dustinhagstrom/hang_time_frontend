@@ -2,7 +2,6 @@ import { Button, Grid, Typography } from "@mui/material";
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addCorrectLettersToWord, addIncorrectLettersToWord } from "../Data";
-import { newStrikeActionCreator } from "../redux/strikeState";
 import {
   updateCorrectLettersActionCreator,
   updateIncorrectLettersActionCreator,
@@ -146,28 +145,33 @@ function AlphabetButtons(props) {
     if (strikeRef.current && incorrectLettersRef.current) {
       strikeRef.current = false;
       incorrectLettersRef.current = false;
-      dispatch(newStrikeActionCreator({ strikes: currentStrikes }));
+      // dispatch(newStrikeActionCreator({ strikes: currentStrikes }));
       dispatch(
         updateIncorrectLettersActionCreator({
-          wordBank,
           incorrectLetters: incorrectLetter,
+          wordBank,
+          strikes: currentStrikes,
         })
       );
-      addIncorrectLettersToWord({ incorrectLetters: incorrectLetter, gameID });
+      addIncorrectLettersToWord({
+        incorrectLetters: incorrectLetter,
+        gameID,
+        strikes: currentStrikes,
+      });
     } //when empty space filled with a letter
     if (emptyLettersRef.current) {
       emptyLettersRef.current = false;
       dispatch(
         updateCorrectLettersActionCreator({
-          wordBank,
           correctLetters: correctLetterToPush,
           emptyLetters: emptySpaceCount,
+          wordBank,
         })
       );
       addCorrectLettersToWord({
         correctLetters: correctLetterToPush,
         emptyLetters: emptySpaceCount,
-        gameID: gameID,
+        gameID,
       });
     } //letter display for player one
     if (user && playerOne && user.username === playerOne.username) {

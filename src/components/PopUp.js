@@ -4,13 +4,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addWordToDB, updateStrikesInDB } from "../Data";
+import { addWordToDB, editWordOnGameOverCondition } from "../Data";
 import Home from "../pages/HomePage";
 import {
   setPlayerOneActionCreator,
   setPlayerTwoActionCreator,
 } from "../redux/playerState";
-import { newStrikeActionCreator } from "../redux/strikeState";
 import { newWordActionCreator } from "../redux/wordState";
 
 const WelcomeUser = (props) => {
@@ -39,35 +38,44 @@ const WelcomeUser = (props) => {
 };
 
 const GameOver = (props) => {
-  const { gameOver, setGameOver, setWord, playerOne, playerTwo, user } = props;
+  const {
+    gameOver,
+    setGameOver,
+    setWord,
+    playerOne,
+    playerTwo,
+    user,
+    wordBank,
+  } = props;
 
+  const gameID = wordBank.gameID;
   const [inputWord, setInputWord] = useState("");
   const [inputWordLength, setInputWordLength] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const repeatAnotherGame = () => {
-    addWordToDB(inputWord.toUpperCase())
+    const newWord = {
+      word: inputWord.toUpperCase(),
+      emptyLetters: inputWordLength,
+      gameID,
+    };
+    editWordOnGameOverCondition(newWord)
       .then((res) => {
-        const { wordBank, message } = res;
-        console.log(wordBank);
-        dispatch(newWordActionCreator(wordBank));
+        const { payload, message } = res.data;
+        const wordFromRes = payload.wordBank;
+        dispatch(newWordActionCreator(wordFromRes));
       })
       .catch((e) => {
         console.log(e.message);
       });
-    dispatch(newStrikeActionCreator({ strikes: 0 }));
-    updateStrikesInDB(0)
-      .then((response) => console.log(response.message))
-      .catch((error) => console.log(error));
-    setGameOver(false);
-    setWord(inputWord);
+    // setGameOver(false);
+    // setWord(inputWord);
   };
 
   const closeTheSession = () => {
     dispatch(setPlayerOneActionCreator(null));
     dispatch(setPlayerTwoActionCreator(null));
-    dispatch(newStrikeActionCreator({ strikes: 0 }));
     dispatch(newWordActionCreator(null));
     navigate("/");
   };
@@ -113,6 +121,7 @@ function PopUp(props) {
   const user = useSelector((state) => state.user);
   const playerOne = useSelector((state) => state.playerOne);
   const playerTwo = useSelector((state) => state.playerTwo);
+  const wordBank = useSelector((state) => state.wordBank);
   console.log(appCondition);
 
   // const strikes = useSelector((state) => state.strikes);
@@ -141,6 +150,7 @@ function PopUp(props) {
               playerOne={playerOne}
               playerTwo={playerTwo}
               user={user}
+              wordBank={wordBank}
             />
           </Box>
         );

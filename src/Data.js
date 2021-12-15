@@ -54,33 +54,35 @@ export const addCorrectLettersToWord = async ({
     data: { correctLetters, emptyLetters, gameID },
   });
 
-export const addIncorrectLettersToWord = async ({ incorrectLetters, gameID }) =>
+export const addIncorrectLettersToWord = async ({
+  incorrectLetters,
+  gameID,
+  strikes,
+}) =>
   Axios({
     method: "put",
     url: "/word/incorrect",
-    data: { incorrectLetters, gameID },
+    data: { incorrectLetters, gameID, strikes },
   });
 
-export const updateStrikesInDB = (newStrikes) =>
-  new Promise((resolve, reject) => {
-    setTimeout(() => {
-      try {
-        // strikes.strikes = newStrikes;
-        resolve({ message: "strikes updated." });
-      } catch (e) {
-        reject(e);
-      }
-    }, 1000);
-  });
+// export const addIncorrectLettersToWord = async ({
+//   incorrectLetters,
+//   gameID,
+//   strikes,
+// }) =>
+//   Axios({
+//     method: "put",
+//     url: "/word/incorrect",
+//     data: { incorrectLetters, gameID, strikes },
+//   });
 
-//TODO this will route to back end with data of creator and opponent along with other applicable data from a game session.
-export const instanceOfAGame = ({}) =>
-  new Promise((resolve, reject) => {
-    setTimeout(() => {
-      try {
-        resolve({ message: "instance of game route hit." });
-      } catch (e) {
-        reject(e);
-      }
-    }, 1000);
+export const editWordOnGameOverCondition = async ({
+  word,
+  emptyLetters,
+  gameID,
+}) =>
+  Axios({
+    method: "put",
+    url: "/word/gameOver",
+    data: { word, emptyLetters, gameID },
   });
