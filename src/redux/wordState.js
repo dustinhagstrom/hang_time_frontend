@@ -25,8 +25,8 @@ export const updateCorrectLettersActionCreator = (clickedLetters) => {
     wordBank
   );
   let newWordBank = { ...wordBank, emptyLetters: emptyLetters };
-  newWordBank.correctLetters = correctLetters;
-  console.log(newWordBank);
+  newWordBank.correctLetters.push(correctLetters);
+  // console.log(newWordBank);
   return {
     type: CORRECT_LETTERS_ACTION,
     payload: newWordBank,
@@ -35,9 +35,17 @@ export const updateCorrectLettersActionCreator = (clickedLetters) => {
 
 export const updateIncorrectLettersActionCreator = (clickedLetters) => {
   const { incorrectLetters, wordBank, strikes } = clickedLetters;
-
+  // console.log(
+  //   incorrectLetters,
+  //   "incorrectLetters",
+  //   strikes,
+  //   "strikes",
+  //   "wordBank",
+  //   wordBank
+  // );
   let newWordBank = { ...wordBank };
-  newWordBank.incorrectLetters = incorrectLetters;
+  newWordBank.incorrectLetters.push(incorrectLetters);
+  newWordBank.strikes = strikes;
 
   return {
     type: INCORRECT_LETTERS_ACTION,

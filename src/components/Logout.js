@@ -19,6 +19,7 @@ function Logout() {
     dispatch(setPlayerOneActionCreator(null));
     dispatch(setPlayerTwoActionCreator(null));
     dispatch(newWordActionCreator(null));
+    window.localStorage.clear();
   }, []);
 
   return <Home />;

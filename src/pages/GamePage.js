@@ -11,6 +11,7 @@ import Word from "../components/Word";
 import { PusherProvider, usePusher } from "../PusherContext";
 import { setPlayerTwoActionCreator } from "../redux/playerState";
 import {
+  newWordActionCreator,
   updateCorrectLettersActionCreator,
   updateIncorrectLettersActionCreator,
 } from "../redux/wordState";
@@ -67,41 +68,65 @@ const PlayerScreen = () => {
   //PUSHER USE EFFECT
   useEffect(() => {
     console.log("useEffect: ", currentStrikes, emptyLetters, wordObj);
-    //P2 joins game
-    function p2JoinHandler(data) {
-      console.log(data.payload);
-      dispatch(setPlayerTwoActionCreator(data.payload));
-    }
-    //correct Letter guessed
-    function correctLetterEventHandler(data) {
-      dispatch(
-        updateCorrectLettersActionCreator({
-          wordBank: wordObj,
-          correctLetters: data.payload.correctLetters,
+    if (user && playerOne && user.username === playerOne.username) {
+      //P2 joins game
+      function p2JoinHandler(data) {
+        console.log(data.payload);
+        dispatch(setPlayerTwoActionCreator(data.payload));
+      }
+      //correct Letter guessed
+      function correctLetterEventHandler(data) {
+        let correctArray = data.payload.correctLetters;
+        dispatch(
+          updateCorrectLettersActionCreator({
+            wordBank: wordObj, //intentionally send this "old" value
+            correctLetters: correctArray[correctArray.length - 1],
+            emptyLetters: data.payload.emptyLetters,
+          })
+        );
+        setLetters({
           emptyLetters: data.payload.emptyLetters,
-        })
-      );
-    }
-    //incorrect Letter guessed
-    function incorrectLetterEventHandler(data) {
-      dispatch(
-        updateIncorrectLettersActionCreator({
-          wordBank: wordObj,
-          incorrectLetters: data.payload.incorrectLetters,
-        })
-      );
-    }
+          filledLetter: filledLetter,
+        });
+      }
+      //incorrect Letter guessed
+      function incorrectLetterEventHandler(data) {
+        let incorrectArray = data.payload.incorrectLetters;
+        dispatch(
+          updateIncorrectLettersActionCreator({
+            wordBank: wordObj,
+            incorrectLetters: incorrectArray[incorrectArray.length - 1],
+            strikes: data.payload.strikes,
+          })
+        );
+        setCurrentStrikes(data.payload.strikes);
+      }
 
-    channel.bind("P2joinEvent", p2JoinHandler);
-    channel.bind("correctLetterEvent", correctLetterEventHandler);
-    channel.bind("incorrectLetterEvent", incorrectLetterEventHandler);
+      channel.bind("P2joinEvent", p2JoinHandler);
+      channel.bind("correctLetterEvent", correctLetterEventHandler);
+      channel.bind("incorrectLetterEvent", incorrectLetterEventHandler);
 
-    return () => {
-      //this is cleanup func
-      channel.unbind("P2joinEvent", p2JoinHandler);
-      channel.unbind("correctLetterEvent", correctLetterEventHandler);
-      channel.unbind("incorrectLetterEvent", incorrectLetterEventHandler);
-    };
+      return () => {
+        //this is cleanup func
+        channel.unbind("P2joinEvent", p2JoinHandler);
+        channel.unbind("correctLetterEvent", correctLetterEventHandler);
+        channel.unbind("incorrectLetterEvent", incorrectLetterEventHandler);
+      };
+    }
+    if (user && playerTwo && user.username === playerTwo.username) {
+      //new word at new game
+      function gameOverNewWordEventHandler(data) {
+        console.log(data.payload);
+        dispatch(newWordActionCreator(data.payload));
+        setGameOver(false);
+        setWord(data.payload.word);
+      }
+
+      channel.bind("gameOverNewWordEvent", gameOverNewWordEventHandler);
+      return () => {
+        channel.unbind("gameOverNewWordEvent", gameOverNewWordEventHandler);
+      };
+    }
   }, [currentStrikes, emptyLetters, pusher, wordObj]); //might have to change wordOBJ
 
   useEffect(() => {
@@ -148,6 +173,7 @@ const PlayerScreen = () => {
 };
 
 function Game() {
+  console.log("game component which returns provider wrapping children.");
   return (
     <PusherProvider>
       <Layout>

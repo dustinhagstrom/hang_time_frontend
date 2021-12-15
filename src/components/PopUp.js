@@ -69,7 +69,7 @@ const GameOver = (props) => {
       .catch((e) => {
         console.log(e.message);
       });
-    // setGameOver(false);
+    setGameOver(false);
     // setWord(inputWord);
   };
 
