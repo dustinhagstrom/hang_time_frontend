@@ -3,15 +3,14 @@ import { Box } from "@mui/system";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import Layout from "./Layout";
-
+import { axiosErrorMessage } from "../Axios";
+import { addPlayerTwoDataToWord } from "../Data";
 import {
   setPlayerOneActionCreator,
   setPlayerTwoActionCreator,
 } from "../redux/playerState";
-import { addPlayerTwoDataToWord } from "../Data";
 import { newWordActionCreator } from "../redux/wordState";
-import { axiosErrorMessage } from "../Axios";
+import Layout from "./Layout";
 
 function JoinSession() {
   const user = useSelector((state) => state.user);

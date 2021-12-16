@@ -3,7 +3,6 @@ import { Box } from "@mui/system";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
 import { addWordToDB } from "../Data";
 import { setPlayerOneActionCreator } from "../redux/playerState";
 import { newWordActionCreator } from "../redux/wordState";

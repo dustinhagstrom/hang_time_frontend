@@ -1,17 +1,13 @@
 import { Provider as ReduxProvider } from "react-redux";
 import { Route, Routes } from "react-router";
-
-import Home from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
-import GamePage from "./pages/GamePage";
-import Logout from "./components/Logout";
-import WordInput from "./components/WordInput";
+import { PersistGate } from "redux-persist/integration/react";
 import HostSession from "./components/HostSession";
 import JoinSession from "./components/JoinSession";
-import { store, persistor } from "./redux/configureStore";
-import { PersistGate } from "redux-persist/integration/react";
-import { useSelector } from "react-redux";
-import { PusherProvider } from "./PusherContext";
+import Logout from "./components/Logout";
+import GamePage from "./pages/GamePage";
+import Home from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import { persistor, store } from "./redux/configureStore";
 
 function App() {
   return (
@@ -21,7 +17,6 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/game" element={<GamePage />} />
-          <Route path="/word" element={<WordInput />} />
           <Route path="/host" element={<HostSession />} />
           <Route path="/join" element={<JoinSession />} />
           <Route path="/" element={<Home />} />

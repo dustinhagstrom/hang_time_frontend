@@ -1,11 +1,11 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addWordToDB, editWordOnGameOverCondition } from "../Data";
-import Home from "../pages/HomePage";
+import { axiosErrorMessage } from "../Axios";
+import { editWordOnGameOverCondition } from "../Data";
+import { usePusher } from "../PusherContext";
 import {
   setPlayerOneActionCreator,
   setPlayerTwoActionCreator,
@@ -13,7 +13,7 @@ import {
 import { newWordActionCreator } from "../redux/wordState";
 
 const WelcomeUser = (props) => {
-  const { user } = props;
+  const user = useSelector((state) => state.user);
 
   const navigate = useNavigate();
 
@@ -38,16 +38,16 @@ const WelcomeUser = (props) => {
 };
 
 const GameOver = (props) => {
-  const {
-    gameOver,
-    setGameOver,
-    setWord,
-    playerOne,
-    playerTwo,
-    user,
-    wordBank,
-  } = props;
+  const pusher = usePusher();
 
+  const { playerOneWins, playerTwoWins } = props;
+
+  const wordBank = useSelector((state) => state.wordBank);
+  const user = useSelector((state) => state.user);
+  const playerOne = useSelector((state) => state.playerOne);
+  const playerTwo = useSelector((state) => state.playerTwo);
+  const isPlayerOne =
+    user && playerOne && user.username === playerOne.username ? true : false;
   const gameID = wordBank.gameID;
   const [inputWord, setInputWord] = useState("");
   const [inputWordLength, setInputWordLength] = useState(0);
@@ -55,34 +55,38 @@ const GameOver = (props) => {
   const navigate = useNavigate();
 
   const repeatAnotherGame = () => {
-    const newWord = {
+    const wordToHitDB = {
       word: inputWord.toUpperCase(),
       emptyLetters: inputWordLength,
       gameID,
     };
-    editWordOnGameOverCondition(newWord)
-      .then((res) => {
-        const { payload, message } = res.data;
-        const wordFromRes = payload.wordBank;
-        dispatch(newWordActionCreator(wordFromRes));
-      })
-      .catch((e) => {
-        console.log(e.message);
-      });
-    setGameOver(false);
-    // setWord(inputWord);
+    const wordToDispatch = {
+      ...wordToHitDB,
+      correctLetters: [],
+      incorrectLetters: [],
+      strikes: 0,
+    };
+    dispatch(newWordActionCreator(wordToDispatch));
+    editWordOnGameOverCondition(wordToHitDB).catch((e) => {
+      axiosErrorMessage(e);
+    });
   };
 
   const closeTheSession = () => {
     dispatch(setPlayerOneActionCreator(null));
     dispatch(setPlayerTwoActionCreator(null));
     dispatch(newWordActionCreator(null));
+    pusher.disconnect();
     navigate("/");
   };
   return (
     <>
       <Typography>Game Over</Typography>
-      {playerOne && playerOne.username === user.username ? (
+      <Typography>The Winner :</Typography>
+      <Typography>
+        {playerOneWins ? playerOne.username : playerTwo.username}
+      </Typography>
+      {isPlayerOne ? (
         <>
           <Typography>Please enter a word below</Typography>
           <TextField
@@ -101,35 +105,20 @@ const GameOver = (props) => {
           </Button>
         </>
       ) : (
-        <Typography>Waiting on Player One...</Typography>
+        <Typography>Waiting on {playerOne.username}...</Typography>
       )}
       <Button onClick={closeTheSession}>Close The Session</Button>
     </>
   );
 };
 
-const InputNewWord = (props) => {
-  const { setWord } = props;
-  //TODO: if a new game is started then this popup appears to allow
-  // playerOne to put a new word into the game.
-
-  return <div></div>;
-};
-
 function PopUp(props) {
-  const { gameOver, setGameOver, setWord, appCondition } = props;
-  const user = useSelector((state) => state.user);
-  const playerOne = useSelector((state) => state.playerOne);
-  const playerTwo = useSelector((state) => state.playerTwo);
-  const wordBank = useSelector((state) => state.wordBank);
-  console.log(appCondition);
-
-  // const strikes = useSelector((state) => state.strikes);
+  const { playerOneWins, playerTwoWins, appCondition } = props;
 
   const renderComponentsSwitchCase = (condition) => {
     switch (condition) {
       case "WelcomeUser":
-        return <WelcomeUser user={user} />;
+        return <WelcomeUser />;
       case "GameOver":
         return (
           <Box
@@ -144,33 +133,8 @@ function PopUp(props) {
             }}
           >
             <GameOver
-              gameOver={gameOver}
-              setGameOver={setGameOver}
-              setWord={setWord}
-              playerOne={playerOne}
-              playerTwo={playerTwo}
-              user={user}
-              wordBank={wordBank}
-            />
-          </Box>
-        );
-      case "InputNewGameWord":
-        return (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-              position: "absolute",
-              margin: " 25% auto",
-              background: "hsl(89, 43%, 51%)",
-            }}
-          >
-            <GameOver
-              gameOver={gameOver}
-              setGameOver={setGameOver}
-              setWord={setWord}
+              playerOneWins={playerOneWins}
+              playerTwoWins={playerTwoWins}
             />
           </Box>
         );

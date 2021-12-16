@@ -1,6 +1,6 @@
 import { Box } from "@mui/system";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import AlphabetButtons from "../components/AlphabetButtons";
 import Hang from "../components/Hang";
 import Layout from "../components/Layout";
@@ -20,28 +20,55 @@ const PlayerScreen = () => {
   const user = useSelector((state) => state.user);
   const playerTwo = useSelector((state) => state.playerTwo);
   const playerOne = useSelector((state) => state.playerOne);
-  const wordBank = useSelector((state) => state.wordBank);
+  const wordObj = useSelector((state) => state.wordBank);
 
-  const gameID = wordBank.gameID; //CHANNEL NAME
+  const [gameID, setGameID] = useState(wordObj.gameID); //CHANNEL NAME
   const pusher = usePusher(); //EXTRACT PUSHER (value) from closest provider
   const channel = pusher.subscribe(gameID); //PUSHER CHANNEL SUBSCRIPTION
 
   const dispatch = useDispatch();
 
-  const word = wordBank.word;
-  const strikes = wordBank.strikes;
-  const emptyLetters = wordBank.emptyLetters;
+  const initialWord = wordObj.word;
+  const initialStrikes = wordObj.strikes;
+  const initialEmptyLetters = wordObj.emptyLetters;
+  console.log("playerScreen re-render");
 
-  const isPlayerOne =
-    user && playerOne && user.username === playerOne.username ? true : false;
-  const playerOneWins = strikes >= 6 ? true : false;
-  const playerTwoWins = emptyLetters === 0 ? true : false;
-  const gameOver = playerOneWins || playerTwoWins ? true : false;
+  const [word, setWord] = useState(initialWord);
+  const [currentStrikes, setCurrentStrikes] = useState(initialStrikes);
+  //filledLetter initial state intentionally omitted
+  const [{ emptyLetters, filledLetter }, setLetters] = useState({
+    emptyLetters: initialEmptyLetters,
+  });
+  //incorrectLetter initial state intentionally omitted
+  const [incorrectLetter, setIncorrectLetter] = useState();
+  const [winner, setWinner] = useState("");
+  const [disableButtonsOnGameOver, setDisableButtonsOnGameOver] =
+    useState(false);
+
+  // if strikes === 6 -> game over. player one wins
+  // if emptyLetters === 0 -> game over. player two wins
+  const [gameOver, setGameOver] = useState(false);
+
+  // possibly use a setTimeout to render the popup after game over.
+  const gameOverCondition = () => {
+    if (currentStrikes >= 6) {
+      //player one wins
+      setGameOver(true);
+      setWinner(playerOne.username);
+      setDisableButtonsOnGameOver(true);
+    }
+    if (emptyLetters === 0) {
+      //player two wins
+      setGameOver(true);
+      setWinner(playerTwo.username);
+      setDisableButtonsOnGameOver(true);
+    }
+  };
 
   //PUSHER USE EFFECT
   useEffect(() => {
-    console.log("useEffect: ", strikes, emptyLetters, wordBank);
-    if (isPlayerOne) {
+    console.log("useEffect: ", currentStrikes, emptyLetters, wordObj);
+    if (user && playerOne && user.username === playerOne.username) {
       //P2 joins game
       function p2JoinHandler(data) {
         console.log(data.payload);
@@ -50,26 +77,29 @@ const PlayerScreen = () => {
       //correct Letter guessed
       function correctLetterEventHandler(data) {
         let correctArray = data.payload.correctLetters;
-        let clickedLetter = correctArray[correctArray.length - 1];
         dispatch(
           updateCorrectLettersActionCreator({
-            wordBank: wordBank,
-            correctLetters: clickedLetter,
+            wordBank: wordObj, //intentionally send this "old" value
+            correctLetters: correctArray[correctArray.length - 1],
             emptyLetters: data.payload.emptyLetters,
           })
         );
+        setLetters({
+          emptyLetters: data.payload.emptyLetters,
+          filledLetter: filledLetter,
+        });
       }
       //incorrect Letter guessed
       function incorrectLetterEventHandler(data) {
         let incorrectArray = data.payload.incorrectLetters;
-        let clickedLetter = incorrectArray[incorrectArray.length - 1];
         dispatch(
           updateIncorrectLettersActionCreator({
-            wordBank,
-            incorrectLetters: clickedLetter,
+            wordBank: wordObj,
+            incorrectLetters: incorrectArray[incorrectArray.length - 1],
             strikes: data.payload.strikes,
           })
         );
+        setCurrentStrikes(data.payload.strikes);
       }
 
       channel.bind("P2joinEvent", p2JoinHandler);
@@ -83,11 +113,14 @@ const PlayerScreen = () => {
         channel.unbind("incorrectLetterEvent", incorrectLetterEventHandler);
       };
     }
-    if (!isPlayerOne) {
+    if (user && playerTwo && user.username === playerTwo.username) {
       //new word at new game
       function gameOverNewWordEventHandler(data) {
         console.log(data.payload);
         dispatch(newWordActionCreator(data.payload));
+        setGameOver(false);
+        setWord(data.payload.word);
+        setDisableButtonsOnGameOver(false);
       }
 
       channel.bind("gameOverNewWordEvent", gameOverNewWordEventHandler);
@@ -95,33 +128,53 @@ const PlayerScreen = () => {
         channel.unbind("gameOverNewWordEvent", gameOverNewWordEventHandler);
       };
     }
-  }, [strikes, emptyLetters, pusher, wordBank]); //might have to change wordOBJ
+  }, [currentStrikes, emptyLetters, pusher, wordObj]); //might have to change wordOBJ
+
+  useEffect(() => {
+    gameOverCondition();
+  }, [currentStrikes, emptyLetters]);
 
   return (
     <>
       {gameOver ? (
         <PopUp
+          gameOver={gameOver}
+          setGameOver={setGameOver}
+          setWord={setWord}
           appCondition={"GameOver"}
-          playerOneWins={playerOneWins}
-          playerTwoWins={playerTwoWins}
         />
       ) : (
         <></>
       )}
-      <Opponent />
+      <Opponent gameID={gameID} />
       <Box>
         <Hang />
         <Word word={word} />
       </Box>
       <Box sx={{ maxWidth: "300px" }}>
         <Strikes />
-        <AlphabetButtons gameOver={gameOver} />
+        <AlphabetButtons
+          word={word}
+          setCurrentStrikes={setCurrentStrikes}
+          currentStrikes={currentStrikes}
+          setLetters={setLetters}
+          emptyLetters={emptyLetters}
+          filledLetter={filledLetter}
+          setIncorrectLetter={setIncorrectLetter}
+          incorrectLetter={incorrectLetter}
+          user={user}
+          playerOne={playerOne}
+          playerTwo={playerTwo}
+          disableButtonsOnGameOver={disableButtonsOnGameOver}
+          gameID={gameID}
+        />
       </Box>
     </>
   );
 };
 
 function Game() {
+  console.log("game component which returns provider wrapping children.");
   return (
     <PusherProvider>
       <Layout>

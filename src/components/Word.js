@@ -1,33 +1,40 @@
-import { Button } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import Letter from "./Letter";
 
 // this component shows the word
-function Word(props) {
-  const { word } = props;
-  const [letters, setLetters] = useState([]);
-  //handle the empty letter logic, pass down set func to letters component.
-  const addsLetters = () => {
-    let letterHolder = [];
-    for (let i = 0; i < word.length; i++) {
-      letterHolder.push({ letter: word[i] });
-    }
-    setLetters(letterHolder);
-  };
+function Word() {
+  const wordBank = useSelector((state) => state.wordBank);
+  const word = wordBank.word;
+  const correctLettersArray = wordBank.correctLetters;
 
-  useEffect(() => {
-    addsLetters();
-  }, [word]);
+  const gameWordArray = [];
+  for (let i = 0; i < word.length; i++) {
+    gameWordArray.push(word[i]);
+  }
+  console.log("gameWordArray :", gameWordArray);
+
   return (
     <Box>
       <Box
         id="wordContainer"
         sx={{ display: "flex", justifyContent: "center" }}
       >
-        {letters.map((letter, index, array) => {
-          return <Letter letterChar={letter} key={index} />;
+        {gameWordArray.map((letter, index, array) => {
+          let isVisible = false;
+
+          if (correctLettersArray.includes(letter)) {
+            isVisible = true;
+          }
+
+          return (
+            <Letter
+              letter={letter}
+              key={letter + index + "-gameWord"}
+              isVisible={isVisible}
+            />
+          );
         })}
       </Box>
     </Box>

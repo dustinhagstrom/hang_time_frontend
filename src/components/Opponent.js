@@ -1,30 +1,24 @@
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 
-function Opponent(props) {
-  const { gameID } = props;
-
+function Opponent() {
   const user = useSelector((state) => state.user);
   const playerOne = useSelector((state) => state.playerOne);
   const playerTwo = useSelector((state) => state.playerTwo);
+  const gameID = useSelector((state) => state.wordBank.gameID);
 
-  const [opponent, setOpponent] = useState("Waiting for Opponent to join...");
-
-  useEffect(() => {
-    if (user && playerOne && playerTwo) {
-      user.username === playerOne.username
-        ? setOpponent(playerTwo)
-        : setOpponent(playerOne);
-    }
-  }, []);
-
+  const isPlayerOne =
+    user && playerOne && user.username === playerOne.username ? true : false;
+  const hasPlayerTwoJoinedGame = playerTwo && playerTwo.username ? true : false;
+  const opponent =
+    isPlayerOne && hasPlayerTwoJoinedGame
+      ? playerTwo.username
+      : playerOne.username;
   return (
     <Box>
-      <Typography>
-        {typeof opponent === "object" ? opponent.username : opponent}
-      </Typography>
+      <Typography>{opponent}</Typography>
       <Typography>Your Session ID:</Typography>
       <Typography>{gameID}</Typography>
     </Box>

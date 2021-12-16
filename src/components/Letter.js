@@ -1,23 +1,13 @@
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 
 function Letter(props) {
-  const { letterChar } = props;
+  const { letter, isVisible } = props;
 
-  const wordObj = useSelector((state) => state.wordBank);
-  const correctLettersArray = wordObj.correctLetters;
+  const wordBank = useSelector((state) => state.wordBank);
 
-  const [letter, setLetter] = useState("");
-  const [correctLetter, setCorrectLetter] = useState(false);
-
-  useEffect(() => {
-    setLetter(letterChar.letter);
-    if (correctLettersArray.includes(letter)) {
-      setCorrectLetter(true);
-    }
-  }, [wordObj]);
   return (
     <Box
       sx={{
@@ -30,7 +20,7 @@ function Letter(props) {
     >
       <Typography
         sx={{
-          visibility: correctLetter ? "visible" : "hidden",
+          visibility: isVisible ? "visible" : "hidden",
           textAlign: "center",
         }}
       >
