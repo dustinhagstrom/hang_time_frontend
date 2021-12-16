@@ -43,46 +43,16 @@ export const addPlayerTwoDataToWord = async (email, gameID) =>
     data: { email, gameID },
   });
 
-export const addCorrectLettersToWord = async ({
-  correctLetters,
-  emptyLetters,
-  gameID,
-}) =>
+export const updateWordInDBOnPlayerTwoGuess = async (newWordBank) =>
   Axios({
     method: "put",
-    url: "/word/correct",
-    data: { correctLetters, emptyLetters, gameID },
+    url: "/word/guess",
+    data: newWordBank,
   });
 
-export const addIncorrectLettersToWord = async ({
-  incorrectLetters,
-  gameID,
-  strikes,
-}) =>
-  Axios({
-    method: "put",
-    url: "/word/incorrect",
-    data: { incorrectLetters, gameID, strikes },
-  });
-
-// export const addIncorrectLettersToWord = async ({
-//   incorrectLetters,
-//   gameID,
-//   strikes,
-// }) =>
-//   Axios({
-//     method: "put",
-//     url: "/word/incorrect",
-//     data: { incorrectLetters, gameID, strikes },
-//   });
-
-export const editWordOnGameOverCondition = async ({
-  word,
-  emptyLetters,
-  gameID,
-}) =>
+export const editWordOnGameOverCondition = async (newWordBank) =>
   Axios({
     method: "put",
     url: "/word/gameOver",
-    data: { word, emptyLetters, gameID },
+    data: newWordBank,
   });

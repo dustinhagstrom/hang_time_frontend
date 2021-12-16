@@ -2,11 +2,8 @@ import { Button, Grid } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addCorrectLettersToWord, addIncorrectLettersToWord } from "../Data";
-import {
-  updateCorrectLettersActionCreator,
-  updateIncorrectLettersActionCreator,
-} from "../redux/wordState";
+import { axiosErrorMessage } from "../Axios";
+import { updateWordInDBOnPlayerTwoGuess } from "../Data";
 
 function AlphabetButtons(props) {
   const { gameOver } = props;
@@ -22,7 +19,7 @@ function AlphabetButtons(props) {
   const gameID = wordBank.gameID;
   const strikes = wordBank.strikes;
 
-  const dispatch = useDispatch();
+  console.log("word :", word, "strikes :", strikes);
 
   const isPlayerOne =
     user && playerOne && user.username === playerOne.username ? true : false;
@@ -35,37 +32,39 @@ function AlphabetButtons(props) {
   const handlePlayerTwoGuess = (clickedLetter) => {
     let emptySpaceCount = emptyLetters;
 
+    console.log("wordBank :", wordBank);
+
     if (word.includes(clickedLetter)) {
       for (let i = 0; i < word.length; i++) {
         if (word[i] === clickedLetter) {
           emptySpaceCount -= 1;
         }
       }
-      dispatch(
-        updateCorrectLettersActionCreator({
-          correctLetters: clickedLetter,
-          emptyLetters: emptySpaceCount,
-          wordBank,
-        })
-      );
-      addCorrectLettersToWord({
-        correctLetters: clickedLetter,
+      let newCorrectLettersArray = [...correctLetters, clickedLetter];
+      updateWordInDBOnPlayerTwoGuess({
+        ...wordBank,
+        correctLetters: newCorrectLettersArray,
         emptyLetters: emptySpaceCount,
-        gameID,
-      });
-    } else {
-      dispatch(
-        updateIncorrectLettersActionCreator({
-          incorrectLetters: clickedLetter,
-          wordBank,
-          strikes: strikes + 1,
+      })
+        .then((res) => {
+          console.log(res.data.message);
         })
-      );
-      addIncorrectLettersToWord({
-        incorrectLetters: clickedLetter,
-        gameID,
+        .catch((e) => {
+          axiosErrorMessage(e);
+        });
+    } else {
+      let newIncorrectLettersArray = [...incorrectLetters, clickedLetter];
+      updateWordInDBOnPlayerTwoGuess({
+        ...wordBank,
+        incorrectLetters: newIncorrectLettersArray,
         strikes: strikes + 1,
-      });
+      })
+        .then((res) => {
+          console.log(res.message);
+        })
+        .catch((e) => {
+          axiosErrorMessage(e);
+        });
     }
   };
 

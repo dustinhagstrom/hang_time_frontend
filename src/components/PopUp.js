@@ -12,7 +12,7 @@ import {
 } from "../redux/playerState";
 import { newWordActionCreator } from "../redux/wordState";
 
-const WelcomeUser = (props) => {
+const WelcomeUser = () => {
   const user = useSelector((state) => state.user);
 
   const navigate = useNavigate();
@@ -55,19 +55,12 @@ const GameOver = (props) => {
   const navigate = useNavigate();
 
   const repeatAnotherGame = () => {
-    const wordToHitDB = {
+    const newWordBank = {
+      ...wordBank,
       word: inputWord.toUpperCase(),
       emptyLetters: inputWordLength,
-      gameID,
     };
-    const wordToDispatch = {
-      ...wordToHitDB,
-      correctLetters: [],
-      incorrectLetters: [],
-      strikes: 0,
-    };
-    dispatch(newWordActionCreator(wordToDispatch));
-    editWordOnGameOverCondition(wordToHitDB).catch((e) => {
+    editWordOnGameOverCondition({ newWordBank }).catch((e) => {
       axiosErrorMessage(e);
     });
   };
@@ -76,7 +69,6 @@ const GameOver = (props) => {
     dispatch(setPlayerOneActionCreator(null));
     dispatch(setPlayerTwoActionCreator(null));
     dispatch(newWordActionCreator(null));
-    pusher.disconnect();
     navigate("/");
   };
   return (

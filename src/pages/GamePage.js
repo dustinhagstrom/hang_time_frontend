@@ -12,6 +12,7 @@ import { PusherProvider, usePusher } from "../PusherContext";
 import { setPlayerTwoActionCreator } from "../redux/playerState";
 import {
   newWordActionCreator,
+  setPlayerTwoGuessActionCreator,
   updateCorrectLettersActionCreator,
   updateIncorrectLettersActionCreator,
 } from "../redux/wordState";
@@ -24,7 +25,6 @@ const PlayerScreen = () => {
 
   const gameID = wordBank.gameID; //CHANNEL NAME
   const pusher = usePusher(); //EXTRACT PUSHER (value) from closest provider
-  const channel = pusher.subscribe(gameID); //PUSHER CHANNEL SUBSCRIPTION
 
   const dispatch = useDispatch();
 
@@ -38,64 +38,39 @@ const PlayerScreen = () => {
   const playerTwoWins = emptyLetters === 0 ? true : false;
   const gameOver = playerOneWins || playerTwoWins ? true : false;
 
-  //PUSHER USE EFFECT
-  useEffect(() => {
-    console.log("useEffect: ", strikes, emptyLetters, wordBank);
+  //P2 joins game
+  function p2JoinHandler(data) {
     if (isPlayerOne) {
-      //P2 joins game
-      function p2JoinHandler(data) {
-        console.log(data.payload);
-        dispatch(setPlayerTwoActionCreator(data.payload));
-      }
-      //correct Letter guessed
-      function correctLetterEventHandler(data) {
-        let correctArray = data.payload.correctLetters;
-        let clickedLetter = correctArray[correctArray.length - 1];
-        dispatch(
-          updateCorrectLettersActionCreator({
-            wordBank: wordBank,
-            correctLetters: clickedLetter,
-            emptyLetters: data.payload.emptyLetters,
-          })
-        );
-      }
-      //incorrect Letter guessed
-      function incorrectLetterEventHandler(data) {
-        let incorrectArray = data.payload.incorrectLetters;
-        let clickedLetter = incorrectArray[incorrectArray.length - 1];
-        dispatch(
-          updateIncorrectLettersActionCreator({
-            wordBank,
-            incorrectLetters: clickedLetter,
-            strikes: data.payload.strikes,
-          })
-        );
-      }
-
-      channel.bind("P2joinEvent", p2JoinHandler);
-      channel.bind("correctLetterEvent", correctLetterEventHandler);
-      channel.bind("incorrectLetterEvent", incorrectLetterEventHandler);
-
-      return () => {
-        //this is cleanup func
-        channel.unbind("P2joinEvent", p2JoinHandler);
-        channel.unbind("correctLetterEvent", correctLetterEventHandler);
-        channel.unbind("incorrectLetterEvent", incorrectLetterEventHandler);
-      };
+      console.log(data.payload);
+      dispatch(setPlayerTwoActionCreator(data.payload));
     }
-    if (!isPlayerOne) {
-      //new word at new game
-      function gameOverNewWordEventHandler(data) {
-        console.log(data.payload);
-        dispatch(newWordActionCreator(data.payload));
-      }
+  }
 
-      channel.bind("gameOverNewWordEvent", gameOverNewWordEventHandler);
-      return () => {
-        channel.unbind("gameOverNewWordEvent", gameOverNewWordEventHandler);
-      };
-    }
-  }, [strikes, emptyLetters, pusher, wordBank]); //might have to change wordOBJ
+  function p2GuessHandler(data) {
+    console.log(data.payload);
+    dispatch(setPlayerTwoGuessActionCreator(data.payload));
+  }
+
+  //new word at new game
+  function gameOverNewWordEventHandler(data) {
+    console.log(data.payload);
+    dispatch(newWordActionCreator(data.payload));
+  }
+
+  // subscribe and unsubscribe to pusher
+  useEffect(() => {
+    const channel = pusher.subscribe(gameID); //PUSHER CHANNEL SUBSCRIPTION
+
+    channel.bind("P2joinEvent", p2JoinHandler);
+    channel.bind("P2GuessEvent", p2GuessHandler);
+    channel.bind("gameOverNewWordEvent", gameOverNewWordEventHandler);
+
+    return () => {
+      channel.unbind("P2joinEvent", p2JoinHandler);
+      channel.unbind("P2GuessEvent", p2GuessHandler);
+      channel.unbind("gameOverNewWordEvent", gameOverNewWordEventHandler);
+    };
+  }, []);
 
   return (
     <>

@@ -7,13 +7,14 @@ import Letter from "./Letter";
 function Word() {
   const wordBank = useSelector((state) => state.wordBank);
   const word = wordBank.word;
-  const correctLettersArray = wordBank.correctLetters;
+  const correctLetters = wordBank.correctLetters;
 
   const gameWordArray = [];
   for (let i = 0; i < word.length; i++) {
     gameWordArray.push(word[i]);
   }
   console.log("gameWordArray :", gameWordArray);
+  console.log("correctLetters :", correctLetters);
 
   return (
     <Box>
@@ -24,7 +25,7 @@ function Word() {
         {gameWordArray.map((letter, index, array) => {
           let isVisible = false;
 
-          if (correctLettersArray.includes(letter)) {
+          if (correctLetters.includes(letter)) {
             isVisible = true;
           }
 

@@ -2,9 +2,7 @@ const WORD_INITIAL_STATE = { wordBank: null };
 
 //ACTION
 const NEW_WORD_ACTION = "dustinhagstrom.codes/NEW_WORD_ACTION";
-const CORRECT_LETTERS_ACTION = "dustinhagstrom.codes/CORRECT_LETTERS_ACTION";
-const INCORRECT_LETTERS_ACTION =
-  "dustinhagstrom.codes/INCORRECT_LETTERS_ACTION";
+const PLAYER_TWO_GUESS_ACTION = "dustinhagstrom.codes/PLAYER_TWO_GUESS_ACTION";
 
 //ACTION CREATORS
 export const newWordActionCreator = (wordBank) => {
@@ -14,42 +12,10 @@ export const newWordActionCreator = (wordBank) => {
   };
 };
 
-export const updateCorrectLettersActionCreator = (clickedLetters) => {
-  const { correctLetters, emptyLetters, wordBank } = clickedLetters;
-  console.log(
-    correctLetters,
-    "correctLetters",
-    emptyLetters,
-    "emptyLetters",
-    "wordBank",
-    wordBank
-  );
-  let newWordBank = { ...wordBank, emptyLetters: emptyLetters };
-  newWordBank.correctLetters.push(correctLetters);
-  // console.log(newWordBank);
+export const setPlayerTwoGuessActionCreator = (wordBank) => {
   return {
-    type: CORRECT_LETTERS_ACTION,
-    payload: newWordBank,
-  };
-};
-
-export const updateIncorrectLettersActionCreator = (clickedLetters) => {
-  const { incorrectLetters, wordBank, strikes } = clickedLetters;
-  // console.log(
-  //   incorrectLetters,
-  //   "incorrectLetters",
-  //   strikes,
-  //   "strikes",
-  //   "wordBank",
-  //   wordBank
-  // );
-  let newWordBank = { ...wordBank };
-  newWordBank.incorrectLetters.push(incorrectLetters);
-  newWordBank.strikes = strikes;
-
-  return {
-    type: INCORRECT_LETTERS_ACTION,
-    payload: newWordBank,
+    type: PLAYER_TWO_GUESS_ACTION,
+    payload: wordBank,
   };
 };
 
@@ -60,13 +26,7 @@ export const wordReducer = (state = WORD_INITIAL_STATE, action) => {
     return payload;
   }
 
-  if (action.type === CORRECT_LETTERS_ACTION) {
-    const { payload } = action;
-
-    return payload;
-  }
-
-  if (action.type === INCORRECT_LETTERS_ACTION) {
+  if (action.type === PLAYER_TWO_GUESS_ACTION) {
     const { payload } = action;
 
     return payload;
