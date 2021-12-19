@@ -3,14 +3,13 @@ import { Provider as ReduxProvider } from "react-redux";
 import { Route, Routes } from "react-router";
 import { PersistGate } from "redux-persist/integration/react";
 import NotFound from "./components/NotFound";
-import { persistor, store } from "./redux/configureStore";
-import Spinner from "./components/spinner/Spinner";
 const HostSession = React.lazy(() => import("./components/HostSession"));
 const JoinSession = React.lazy(() => import("./components/JoinSession"));
 const Logout = React.lazy(() => import("./components/Logout"));
-const GamePage = React.lazy(() => import("./pages/GamePage"));
-const Home = React.lazy(() => import("./pages/HomePage"));
-const LoginPage = React.lazy(() => import("./pages/LoginPage"));
+const GamePage = React.lazy(() => import("./components/GamePage"));
+const Home = React.lazy(() => import("./components/Home"));
+const LoginPage = React.lazy(() => import("./components/LoginPage"));
+import { persistor, store } from "./redux/configureStore";
 
 function App() {
   return (
@@ -19,7 +18,6 @@ function App() {
         <Suspense fallback={<Spinner />}>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<LoginPage />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/game" element={<GamePage />} />
             <Route path="/host" element={<HostSession />} />

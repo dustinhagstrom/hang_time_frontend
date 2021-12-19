@@ -81,11 +81,9 @@ function AlphabetButtons(props) {
               let letterColor = "black";
 
               if (correctLetters.includes(letter)) {
-                console.log(`${letter} should be green :`);
                 letterColor = "green";
               }
               if (incorrectLetters.includes(letter)) {
-                console.log(`${letter} should be red :`);
                 letterColor = "red";
               }
               return (
@@ -102,15 +100,12 @@ function AlphabetButtons(props) {
               );
             })
           : arrayOfAlphabetLetters.map((letter, index, array) => {
-              let isButtonVisible = true;
               let isButtonDisabled = false;
 
               if (correctLetters.includes(letter)) {
-                isButtonVisible = false;
                 isButtonDisabled = true;
               }
               if (incorrectLetters.includes(letter)) {
-                isButtonVisible = false;
                 isButtonDisabled = true;
               }
               if (gameOver) {
