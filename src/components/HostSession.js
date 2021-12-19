@@ -4,27 +4,34 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { addWordToDB } from "../Data";
+import wordInputFields from "../hooks/wordInputFields";
 import { setPlayerOneActionCreator } from "../redux/playerState";
 import { newWordActionCreator } from "../redux/wordState";
 import Layout from "./Layout";
 
 function HostSession() {
   const user = useSelector((state) => state.user);
-  const [inputWord, setInputWord] = useState("");
-  const [inputWordLength, setInputWordLength] = useState(0);
-  const [isDisabled, setIsDisabled] = useState(false);
+
+  const [
+    gameWord,
+    gameWordOnChange,
+    gameWordError,
+    gameWordErrorMessage,
+    gameWordIsDisabled,
+    gameWordClearInput,
+  ] = wordInputFields("word");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const submitWord = (e) => {
-    setIsDisabled(true);
     const wordBank = {
-      word: inputWord.toUpperCase(),
-      emptyLetters: inputWordLength,
+      word: gameWord,
+      emptyLetters: gameWord.length,
       userEmail: user.email,
     };
 
+    gameWordClearInput();
     addWordToDB(wordBank)
       .then((res) => {
         console.log(res.data.payload);
@@ -50,13 +57,13 @@ function HostSession() {
         <Typography>Please enter a word below</Typography>
         <TextField
           sx={{ width: "50%" }}
-          value={inputWord}
-          onChange={(e) => {
-            setInputWord(e.target.value);
-            setInputWordLength(e.target.value.length);
-          }}
+          value={gameWord}
+          label={gameWordError ? gameWordErrorMessage : ""}
+          error={gameWordError}
+          color={gameWordError ? "error" : "success"}
+          onChange={gameWordOnChange}
         ></TextField>
-        <Button onClick={submitWord} disabled={isDisabled}>
+        <Button onClick={submitWord} disabled={gameWordIsDisabled}>
           Submit Word
         </Button>
       </Box>

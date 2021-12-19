@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { axiosErrorMessage } from "../Axios";
 import { editWordOnGameOverCondition } from "../Data";
+import WordInputFields from "../hooks/wordInputFields";
 import { usePusher } from "../PusherContext";
 import {
   setPlayerOneActionCreator,
@@ -40,6 +41,15 @@ const WelcomeUser = () => {
 const GameOver = (props) => {
   const pusher = usePusher();
 
+  const [
+    gameWord,
+    gameWordOnChange,
+    gameWordError,
+    gameWordErrorMessage,
+    gameWordIsDisabled,
+    gameWordClearInput,
+  ] = WordInputFields("word");
+
   const { playerOneWins, playerTwoWins } = props;
 
   const wordBank = useSelector((state) => state.wordBank);
@@ -57,9 +67,10 @@ const GameOver = (props) => {
   const repeatAnotherGame = () => {
     const newWordBank = {
       ...wordBank,
-      word: inputWord.toUpperCase(),
-      emptyLetters: inputWordLength,
+      word: gameWord,
+      emptyLetters: gameWord.length,
     };
+    gameWordClearInput();
     editWordOnGameOverCondition({ newWordBank }).catch((e) => {
       axiosErrorMessage(e);
     });
@@ -83,11 +94,11 @@ const GameOver = (props) => {
           <Typography>Please enter a word below</Typography>
           <TextField
             sx={{ width: "50%" }}
-            value={inputWord}
-            onChange={(e) => {
-              setInputWord(e.target.value);
-              setInputWordLength(e.target.value.length);
-            }}
+            value={gameWord}
+            label={gameWordError ? gameWordErrorMessage : ""}
+            error={gameWordError}
+            color={gameWordError ? "error" : "success"}
+            onChange={gameWordOnChange}
           ></TextField>
           <Button
             onClick={repeatAnotherGame}
