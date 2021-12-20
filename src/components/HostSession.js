@@ -3,6 +3,7 @@ import { Box } from "@mui/system";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import { axiosErrorMessage } from "../Axios";
 import { addWordToDB } from "../Data";
 import UserInputFields from "../hooks/userInputFields";
 import { setPlayerOneActionCreator } from "../redux/playerState";
@@ -34,14 +35,13 @@ function HostSession() {
     gameWordClearInput();
     addWordToDB(wordBank)
       .then((res) => {
-        console.log(res.data.payload);
         const { payload, message } = res.data;
         dispatch(newWordActionCreator(payload));
         dispatch(setPlayerOneActionCreator(user));
         navigate("/game");
       })
       .catch((e) => {
-        console.log(e.message);
+        axiosErrorMessage(e);
       });
   };
   return (

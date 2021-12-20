@@ -13,8 +13,6 @@ function Word() {
   for (let i = 0; i < word.length; i++) {
     gameWordArray.push(word[i]);
   }
-  console.log("gameWordArray :", gameWordArray);
-  console.log("correctLetters :", correctLetters);
 
   return (
     <Box>

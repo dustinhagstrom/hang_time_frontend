@@ -44,19 +44,16 @@ const PlayerScreen = () => {
   //P2 joins game
   function p2JoinHandler(data) {
     if (isPlayerOne) {
-      console.log(data.payload);
       dispatch(setPlayerTwoActionCreator(data.payload));
     }
   }
   //guess
   function p2GuessHandler(data) {
-    console.log(data.payload);
     dispatch(setPlayerTwoGuessActionCreator(data.payload));
   }
 
   //new word at new game
   function gameOverNewWordEventHandler(data) {
-    console.log(data.payload);
     dispatch(newWordActionCreator(data.payload));
   }
 

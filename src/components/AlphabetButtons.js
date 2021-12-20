@@ -19,7 +19,7 @@ function AlphabetButtons(props) {
   const gameID = wordBank.gameID;
   const strikes = wordBank.strikes;
 
-  console.log("word :", word, "strikes :", strikes);
+  // console.log("word :", word, "strikes :", strikes);
 
   const isPlayerOne =
     user && playerOne && user.username === playerOne.username ? true : false;
@@ -32,7 +32,7 @@ function AlphabetButtons(props) {
   const handlePlayerTwoGuess = (clickedLetter) => {
     let emptySpaceCount = emptyLetters;
 
-    console.log("wordBank :", wordBank);
+    // console.log("wordBank :", wordBank);
 
     if (word.includes(clickedLetter)) {
       for (let i = 0; i < word.length; i++) {

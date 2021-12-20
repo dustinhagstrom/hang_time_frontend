@@ -30,13 +30,10 @@ function JoinSession() {
 
   const GoToGameAsPlayerTwo = () => {
     const { email } = user;
-    console.log(gameID.toUpperCase());
-    console.log(gameID);
     addPlayerTwoDataToWord(email, gameID)
       .then((res) => {
         const { message, payload } = res.data;
 
-        console.log(payload);
         dispatch(newWordActionCreator(payload.gameWord));
         dispatch(setPlayerOneActionCreator(payload.foundPlayerOne));
         dispatch(setPlayerTwoActionCreator(user));

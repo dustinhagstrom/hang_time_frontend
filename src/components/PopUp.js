@@ -61,8 +61,6 @@ const GameOver = (props) => {
   const gameID = wordBank.gameID;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log(wordBank);
-  console.log(gameID);
 
   const repeatAnotherGame = () => {
     const newWordBank = {

@@ -116,7 +116,6 @@ const Form = (props) => {
   const onSignUp = () => {
     signUpUser(email, password, username, firstName, lastName)
       .then((res) => {
-        console.log(res);
         const { message } = res.data;
         setError(null);
         setSuccessMessage(message);
