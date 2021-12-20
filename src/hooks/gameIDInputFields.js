@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { isAlpha } from "validator";
 
-function WordInputFields(inputType) {
+function GameIDInputFields(inputType) {
   const [value, setValue] = useState("");
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -29,13 +29,16 @@ function WordInputFields(inputType) {
     }
     if (!isAlpha(value)) {
       setIsError(true);
-      setErrorMessage(
-        `${inputType} can only have letters and it cannot have spaces!`
-      );
+      setErrorMessage(`${inputType} only contains letters!`);
+      setIsDisabled(true);
+    }
+    if (value.length !== 4) {
+      setIsError(true);
+      setErrorMessage(`${inputType} is four letters long.`);
       setIsDisabled(true);
     } else {
       setIsError(false);
-      setErrorMessage(``);
+      setErrorMessage("");
       setIsDisabled(false);
     }
   }
@@ -43,4 +46,4 @@ function WordInputFields(inputType) {
   return [value, onChange, isError, errorMessage, isDisabled, clearInput];
 }
 
-export default WordInputFields;
+export default GameIDInputFields;

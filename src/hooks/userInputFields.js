@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { isAlpha, isAlphanumeric, isEmail, isStrongPassword } from "validator";
+import {
+  isAlpha,
+  isAlphanumeric,
+  isEmail,
+  isStrongPassword,
+  isLength,
+} from "validator";
 
 const UserInputFields = (inputType) => {
   const [value, setValue] = useState(""); //value of the input field.
@@ -30,6 +36,34 @@ const UserInputFields = (inputType) => {
       if (!isAlpha(value)) {
         setIsError(true);
         setErrorMessage(`${inputType} can only have letters!`);
+        setIsDisabled(true);
+      } else {
+        setIsError(false);
+        setErrorMessage(``);
+        setIsDisabled(false);
+      }
+    } else if (inputType === "Game Code") {
+      if (!isAlpha(value)) {
+        setIsError(true);
+        setErrorMessage(`${inputType} can only have letters!`);
+        setIsDisabled(true);
+      } else if (value.length !== 4) {
+        setIsError(true);
+        setErrorMessage(`${inputType} must be 4 letters!`);
+        setIsDisabled(true);
+      } else {
+        setIsError(false);
+        setErrorMessage(``);
+        setIsDisabled(false);
+      }
+    } else if (inputType === "Word") {
+      if (!isAlpha(value)) {
+        setIsError(true);
+        setErrorMessage(`${inputType} can only have letters!`);
+        setIsDisabled(true);
+      } else if (!isLength(value, { min: 1, max: 45 })) {
+        setIsError(true);
+        setErrorMessage(`${inputType} must be between 1 and 45 letters long.`);
         setIsDisabled(true);
       } else {
         setIsError(false);
@@ -85,6 +119,11 @@ const UserInputFields = (inputType) => {
         setErrorMessage(``);
         setIsDisabled(false);
       }
+    } else if (inputType === "Email" || inputType === "Password") {
+      //less validation if user logging in.
+      setIsError(false);
+      setErrorMessage(``);
+      setIsDisabled(false);
     }
   }
 

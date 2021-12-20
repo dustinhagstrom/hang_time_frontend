@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { addWordToDB } from "../Data";
-import wordInputFields from "../hooks/wordInputFields";
+import UserInputFields from "../hooks/userInputFields";
 import { setPlayerOneActionCreator } from "../redux/playerState";
 import { newWordActionCreator } from "../redux/wordState";
 import Layout from "./Layout";
@@ -19,14 +19,14 @@ function HostSession() {
     gameWordErrorMessage,
     gameWordIsDisabled,
     gameWordClearInput,
-  ] = wordInputFields("word");
+  ] = UserInputFields("Word");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const submitWord = (e) => {
     const wordBank = {
-      word: gameWord,
+      word: gameWord.toUpperCase(),
       emptyLetters: gameWord.length,
       userEmail: user.email,
     };

@@ -1,17 +1,15 @@
 import { Button, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { axiosErrorMessage } from "../Axios";
-import { editWordOnGameOverCondition } from "../Data";
-import WordInputFields from "../hooks/wordInputFields";
-import { usePusher } from "../PusherContext";
 import {
-  setPlayerOneActionCreator,
-  setPlayerTwoActionCreator,
-} from "../redux/playerState";
-import { newWordActionCreator } from "../redux/wordState";
+  deleteWordOnGameOverCondition,
+  editWordOnGameOverCondition,
+} from "../Data";
+import UserInputFields from "../hooks/userInputFields";
+import { usePusher } from "../PusherContext";
 
 const WelcomeUser = () => {
   const user = useSelector((state) => state.user);
@@ -48,7 +46,7 @@ const GameOver = (props) => {
     gameWordErrorMessage,
     gameWordIsDisabled,
     gameWordClearInput,
-  ] = WordInputFields("word");
+  ] = UserInputFields("Word");
 
   const { playerOneWins, playerTwoWins } = props;
 
@@ -59,28 +57,27 @@ const GameOver = (props) => {
   const isPlayerOne =
     user && playerOne && user.username === playerOne.username ? true : false;
   const gameID = wordBank.gameID;
-  const [inputWord, setInputWord] = useState("");
-  const [inputWordLength, setInputWordLength] = useState(0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  console.log(wordBank);
+  console.log(gameID);
 
   const repeatAnotherGame = () => {
     const newWordBank = {
       ...wordBank,
-      word: gameWord,
+      word: gameWord.toUpperCase(),
       emptyLetters: gameWord.length,
     };
     gameWordClearInput();
-    editWordOnGameOverCondition({ newWordBank }).catch((e) => {
-      axiosErrorMessage(e);
-    });
+    editWordOnGameOverCondition(newWordBank).catch((e) => axiosErrorMessage(e));
   };
 
   const closeTheSession = () => {
-    dispatch(setPlayerOneActionCreator(null));
-    dispatch(setPlayerTwoActionCreator(null));
-    dispatch(newWordActionCreator(null));
-    navigate("/");
+    deleteWordOnGameOverCondition({ gameID: gameID })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((e) => axiosErrorMessage(e));
   };
   return (
     <>
@@ -99,11 +96,9 @@ const GameOver = (props) => {
             error={gameWordError}
             color={gameWordError ? "error" : "success"}
             onChange={gameWordOnChange}
+            autoFocus
           ></TextField>
-          <Button
-            onClick={repeatAnotherGame}
-            disabled={inputWordLength > 0 ? false : true}
-          >
+          <Button onClick={repeatAnotherGame} disabled={gameWordIsDisabled}>
             Play Again?
           </Button>
         </>

@@ -71,6 +71,22 @@ const Form = (props) => {
     confirmPasswordIsDisabled,
     clearConfirmPasswordInput,
   ] = UserInputFields("confirmPassword");
+  const [
+    loginEmail,
+    loginEmailOnChange,
+    loginEmailError,
+    loginEmailErrorMessage,
+    loginEmailIsDisabled,
+    clearLoginEmailInput,
+  ] = UserInputFields("Email");
+  const [
+    loginPassword,
+    loginPasswordOnChange,
+    loginPasswordError,
+    loginPasswordErrorMessage,
+    loginPasswordIsDisabled,
+    clearLoginPasswordInput,
+  ] = UserInputFields("Password");
 
   const clearAllInputs = () => {
     clearEmailInput();
@@ -82,7 +98,7 @@ const Form = (props) => {
   };
 
   const onSubmit = () => {
-    logInUser(email, password)
+    logInUser(loginEmail, loginPassword)
       .then((res) => {
         const userData = res.data.user;
         const successfulLoginMessage = res.data.message;
@@ -118,6 +134,9 @@ const Form = (props) => {
       });
   };
 
+  //TODO add a function that uses a switch statement to change the color
+  //of the input fields to blue, red, or green. for on selection
+  // on error and on success respectively.
   return (
     <Box
       sx={{
@@ -132,26 +151,27 @@ const Form = (props) => {
           <Box>
             <TextField
               id="standard-basic"
-              label={emailError ? emailErrorMessage : "Email"}
+              label={"Email"}
               variant="outlined"
-              error={emailError}
-              color={emailError ? "error" : "success"}
+              // error={loginEmailError}
+              // color={loginEmailError ? "error" : "success"}
               required
-              value={email}
-              onChange={emailOnChange}
+              value={loginEmail}
+              onChange={loginEmailOnChange}
+              autoFocus={isLoginRoute ? true : false}
             />
           </Box>
           <Box>
             <TextField
               id="standard-basic"
-              label={passwordError ? passwordErrorMessage : "Password"}
+              label={"Password"}
               variant="outlined"
-              error={passwordError}
-              color={passwordError ? "error" : "success"}
+              // error={loginPasswordError}
+              // color={loginPasswordError ? "error" : "success"}
               type="password"
               required
-              value={password}
-              onChange={passwordOnChange}
+              value={loginPassword}
+              onChange={loginPasswordOnChange}
             />
           </Box>
         </>
@@ -167,6 +187,7 @@ const Form = (props) => {
               required
               value={firstName}
               onChange={firstNameOnChange}
+              autoFocus={isLoginRoute ? false : true}
             />
           </Box>
           <Box>
@@ -242,7 +263,7 @@ const Form = (props) => {
           onClick={isLoginRoute ? onSubmit : onSignUp}
           disabled={
             isLoginRoute
-              ? emailIsDisabled || passwordIsDisabled
+              ? loginEmailIsDisabled || loginPasswordIsDisabled
               : emailIsDisabled ||
                 passwordIsDisabled ||
                 confirmPasswordIsDisabled ||

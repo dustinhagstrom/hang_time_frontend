@@ -1,6 +1,7 @@
 import { Box } from "@mui/system";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import AlphabetButtons from "../components/AlphabetButtons";
 import Hang from "../components/Hang";
 import Layout from "../components/Layout";
@@ -9,12 +10,13 @@ import PopUp from "../components/PopUp";
 import Strikes from "../components/Strikes";
 import Word from "../components/Word";
 import { PusherProvider, usePusher } from "../PusherContext";
-import { setPlayerTwoActionCreator } from "../redux/playerState";
+import {
+  setPlayerOneActionCreator,
+  setPlayerTwoActionCreator,
+} from "../redux/playerState";
 import {
   newWordActionCreator,
   setPlayerTwoGuessActionCreator,
-  updateCorrectLettersActionCreator,
-  updateIncorrectLettersActionCreator,
 } from "../redux/wordState";
 
 const PlayerScreen = () => {
@@ -27,6 +29,7 @@ const PlayerScreen = () => {
   const pusher = usePusher(); //EXTRACT PUSHER (value) from closest provider
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const word = wordBank.word;
   const strikes = wordBank.strikes;
@@ -45,7 +48,7 @@ const PlayerScreen = () => {
       dispatch(setPlayerTwoActionCreator(data.payload));
     }
   }
-
+  //guess
   function p2GuessHandler(data) {
     console.log(data.payload);
     dispatch(setPlayerTwoGuessActionCreator(data.payload));
@@ -57,6 +60,14 @@ const PlayerScreen = () => {
     dispatch(newWordActionCreator(data.payload));
   }
 
+  //end of game, end session
+  function gameOverEndSessionEventHandler(data) {
+    navigate("/");
+    dispatch(newWordActionCreator(null));
+    dispatch(setPlayerOneActionCreator(null));
+    dispatch(setPlayerTwoActionCreator(null));
+  }
+
   // subscribe and unsubscribe to pusher
   useEffect(() => {
     const channel = pusher.subscribe(gameID); //PUSHER CHANNEL SUBSCRIPTION
@@ -64,11 +75,13 @@ const PlayerScreen = () => {
     channel.bind("P2joinEvent", p2JoinHandler);
     channel.bind("P2GuessEvent", p2GuessHandler);
     channel.bind("gameOverNewWordEvent", gameOverNewWordEventHandler);
+    channel.bind("EndSessionEvent", gameOverEndSessionEventHandler);
 
     return () => {
       channel.unbind("P2joinEvent", p2JoinHandler);
       channel.unbind("P2GuessEvent", p2GuessHandler);
       channel.unbind("gameOverNewWordEvent", gameOverNewWordEventHandler);
+      channel.unbind("EndSessionEvent", gameOverEndSessionEventHandler);
     };
   }, []);
 

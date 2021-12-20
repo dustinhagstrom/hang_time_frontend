@@ -56,3 +56,10 @@ export const editWordOnGameOverCondition = async (newWordBank) =>
     url: "/word/gameOver",
     data: newWordBank,
   });
+
+export const deleteWordOnGameOverCondition = async ({ gameID }) =>
+  Axios({
+    method: "delete",
+    url: "/word/endSession",
+    data: { gameID },
+  });
