@@ -16,6 +16,7 @@ const UserInputFields = (inputType) => {
 
   function onChange(e) {
     let value = e.target.value;
+    console.log(e.target);
     setValue(value);
 
     checkInput(value);
@@ -44,6 +45,7 @@ const UserInputFields = (inputType) => {
       }
     } else if (inputType === "Game Code") {
       if (!isAlpha(value)) {
+        console.log(value);
         setIsError(true);
         setErrorMessage(`${inputType} can only have letters!`);
         setIsDisabled(true);

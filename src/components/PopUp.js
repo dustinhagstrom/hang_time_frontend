@@ -28,11 +28,13 @@ const WelcomeUser = () => {
   }, []);
 
   return (
-    <>
+    <Box
+      sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+    >
       <Typography>
         Welcome Back {user.username}! Redirecting you to user options...
       </Typography>
-    </>
+    </Box>
   );
 };
 

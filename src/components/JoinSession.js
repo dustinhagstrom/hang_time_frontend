@@ -30,7 +30,9 @@ function JoinSession() {
 
   const GoToGameAsPlayerTwo = () => {
     const { email } = user;
-    addPlayerTwoDataToWord(email, gameID.toUpperCase())
+    console.log(gameID.toUpperCase());
+    console.log(gameID);
+    addPlayerTwoDataToWord(email, gameID)
       .then((res) => {
         const { message, payload } = res.data;
 
